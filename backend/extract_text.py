@@ -1,6 +1,6 @@
 from pypdf import PdfReader
 
-reader = PdfReader("data/FOMC.pdf")
+reader = PdfReader("data/raw/fomcminutes20260128.pdf")
 
 text = ""
 

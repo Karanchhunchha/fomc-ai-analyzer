@@ -1,0 +1,559 @@
+ 
+ 
+FOMC
+ 
+ 
+ 
+FEDERAL RESERVE SYSTEM  
+Minutes of the 
+Federal Open Market Committee 
+January 27–28, 2026 M
+inutes of the Federal Open Market 
+Committee 
+January 27–28, 2026 
+A joint meeting of the Federal Open Market Committee and the Board of Governors of the Federal 
+Reserve System was held in the offices of the Board of Governors on Tuesday, January 27, 2026, at 
+10:00 a.m. and continued on Wednesday, January 28, 2026, at 9:00 a.m. 1 
+Annual Organizational Matters2 
+The agenda for this meeting reported that advices of the election of the following members and 
+alternate members of the Federal Open Market Committee for a term beginning January 27, 2026, 
+were received and that these individuals executed their oaths of office. 
+The elected members and alternate members were as follows: 
+John C. Williams, President of the Federal Reserve Bank of New York, with Sushmita Shukla, First Vice 
+President of the Federal Reserve Bank of New York, as alternate; 
+Anna Paulson, President of the Federal Reserve Bank of Philadelphia, with Thomas I. Barkin, President 
+of the Federal Reserve Bank of Richmond, as alternate; 
+Beth M. Hammack, President of the Federal Reserve Bank of Cleveland, with Austan D. Goolsbee, 
+President of the Federal Reserve Bank of Chicago, as alternate; 
+Lorie K. Logan, President of the Federal Reserve Bank of Dallas, with Raphael W. Bostic, President of 
+the Federal Reserve Bank of Atlanta, as alternate; 
+Neel Kashkari, President of the Federal Reserve Bank of Minneapolis, with Mary C. Daly, President of 
+the Federal Reserve Bank of San Francisco, as alternate. 
+1 The Federal Open Market Committee is referenced as the “FOMC” and the “Committee” in these minutes; the Board of 
+Governors of the Federal Reserve System is referenced as the “Board” in these minutes. 
+2 Committee organizational documents are available at www.federalreserve.gov/monetarypolicy/rules_authorizations.htm. 2    January 27–28, 2026 
+By unanimous vote, the following officers of the Committee were selected to serve until the selection 
+of their successors at the first regularly scheduled meeting of the Committee in 2027: 
+Jerome H. Powell  Chair 
+John C. Williams  Vice Chair 
+Joshua Gallin Secretary 
+Matthew M. Luecke Deputy Secretary 
+Brian J. Bonis Assistant Secretary 
+Michelle A. Smith Assistant Secretary 
+Mark E. Van Der Weide General Counsel 
+Richard Ostrander Deputy General Counsel 
+Reena Sahni Assistant General Counsel 
+Trevor A. Reeve  Economist 
+Stacey Tevlin Economist 
+Beth Anne Wilson Economist 
+Stephanie R. Aaronson 
+Shaghil Ahmed 
+Kartik B. Athreya 
+Brian M. Doyle 
+Eric M. Engen 
+Michael T. Kiley 
+Elizabeth Klee 
+Edward S. Knotek II 
+Karel Mertens 
+Donald Keith Sill 
+Andrea Raffo Associate Economists 
+By unanimous vote, the Committee selected the Federal Reserve Bank of New York to execute 
+transactions for the System Open Market Account (SOMA). 
+By unanimous vote, the Committee selected Roberto Perli and Julie Ann Remache to serve at the 
+pleasure of the Committee as manager and deputy manager of the SOMA, respectively, on the 
+understanding that these selections were subject to being satisfactory to the Federal Reserve Bank of 
+New York.  Minutes of the Federal Open Market Committee    3 
+Secretary’s note:  The Federal Reserve Bank of New York subsequently sent advice 
+that the selections indicated previously were satisfactory. 
+By unanimous vote, the Committee approved the FOMC Authorizations and Continuing Directives for 
+Open Market Operations, with a few minor changes to the Continuing Directive for Domestic Open 
+Market Operations to ensure consistency with the Committee’s direction on conducting standing 
+repurchase agreement (repo) operations in the Implementation Note issued following the December 
+2025 meeting. 
+All participants indicated support for, and agreed to abide by, the FOMC Policy on Investment and 
+Trading for Committee Participants and Federal Reserve System Staff, the Program for Security of 
+FOMC Information, the FOMC Policy on External Communications of Committee Participants, and the 
+FOMC Policy on External Communications of Federal Reserve System Staff.  The Committee voted 
+unanimously to reaffirm those four policies. 
+As part of the Committee’s annual organizational review process, all participants indicated support for 
+the Statement on Longer-Run Goals and Monetary Policy Strategy, and the Committee voted 
+unanimously to reaffirm it without revision. 
+Developments in Financial Markets and Open Market Operations 
+The manager turned first to an overview of broad market developments during the intermeeting 
+period.  Respondents to the Open Market Desk Survey of Market Expectations (Desk survey) 
+continued to see the economy as resilient and again marked up their forecasts for real gross domestic 
+product (GDP) growth in 2026, while their expectations for headline personal consumption 
+expenditures (PCE) inflation and the unemployment rate were little changed.  Market- and survey-
+based policy rate expectations were likewise little changed.  Market-based measures of policy rate 
+expectations indicated one to two 25 basis point rate cuts this year, and the median modal path of the 
+federal funds rate, as given in the Desk survey, continued to indicate expectations of two 25 basis 
+point rate cuts this year.   
+The manager turned next to Treasury market developments and market-based measures of inflation 
+compensation.  Shorter-term Treasury yields were little changed, while longer-term yields rose a few 
+basis points on net; the Treasury curve steepened slightly as a result.  Near-term inflation 
+compensation continued to decline amid lower-than-expected consumer price index (CPI) readings, 
+lower energy prices, and lower-than-anticipated pass-through of tariffs to customers; forward rates 
+suggested that near-term inflation would stabilize close to current levels for the rest of the year.  
+Model-based measures of short-term inflation expectations also declined some over the intermeeting 
+period, with forward rates suggesting further modest declines over the course of this year.  The 4    January 27–28, 2026 
+Treasury market continued to function well amid low volatility.  In light of the growing portion of 
+Treasury securities that is financed using repos, the manager noted the importance of the stability of 
+the repo market for the continued smooth functioning of the Treasury market. 
+The recent announcement that Fannie Mae and Freddie Mac may increase their mortgage investment 
+portfolios garnered substantial market attention and was followed by a notable decline in mortgage-
+backed securities yields relative to those on comparable-maturity Treasury yields.  Still, the manager 
+observed that the decline was unlikely to result in a material increase in mortgage refinancing 
+because current mortgage rates are well above the weighted average rate of outstanding mortgages.  
+The manager moved to a discussion of equity prices.  The largest technology companies continued to 
+underperform the market, as investors remained focused on their elevated valuations and large 
+capital expenditures.  Excluding those companies, the S&P 500 was up nearly 3 percent over the 
+intermeeting period; cyclical sectors and indexes of firms with smaller market capitalizations 
+performed even better.  
+Regarding international developments, private-sector consensus forecasts continued to call for dollar 
+depreciation this year, as many of these forecasters expected a larger reduction in policy rates in the 
+U.S. than in other advanced-economy jurisdictions.  The extent of expected depreciation had 
+moderated quite a bit, on net, over the previous several months, however, in light of continued 
+improvement in the expected growth of the U.S. economy relative to the expected growth of other 
+major economies.  In the days leading up to the meeting, the dollar had depreciated markedly after 
+reports that the Desk had made requests for indicative quotes, known as “rate checks,” on the dollar–
+yen exchange rate.  The manager noted that the Desk had requested those quotes solely on behalf of 
+the U.S. Treasury in the Federal Reserve Bank of New York’s role as the fiscal agent for the U.S.   
+The manager went on to discuss developments in money markets.  Over the intermeeting period, the 
+effective federal funds rate remained stable at a level just below the interest rate on reserve balances, 
+and pressures in repo rates generally moderated.  While repo rates increased notably at year-end, rate 
+pressure was less than investors had generally anticipated.  Money market contacts attributed the 
+better-than-expected outcome to a variety of factors, including an increase in available liquidity due to 
+the start of reserve management purchases (RMPs) and a lower Treasury General Account (TGA), the 
+recent changes to standing repo operations’ design and communications, the increased adoption of 
+centrally cleared repo, and the overall preparedness of investors for year-end tightness.   
+The manager noted that the changes to standing repo operations implemented in December might 
+have made market participants more willing to participate in these operations, as suggested by 
+increased utilization relative to the pre-December period when market rates exceeded the rate on 
+standing repo operations.  Market contacts mentioned that the removal of the aggregate limit, the Minutes of the Federal Open Market Committee    5 
+clarifications that these operations are intended for monetary policy implementation purposes, and 
+the statement by the Chair that the operations are expected to be used when “economically sensible” 
+were particularly helpful factors.   
+Finally, the manager discussed the expected trajectory of key components of the Federal Reserve’s 
+balance sheet.  With RMPs continuing, reserves were expected to increase until early April before 
+dropping quickly and sharply as tax revenues flow into the TGA.  At their trough, reserves were 
+expected to be at a level comparable with what prevailed at year-end.  Over most of the projection 
+period, reserves were expected to fluctuate in a range close to $3 trillion.   
+By unanimous vote, the Committee ratified the Desk’s domestic transactions over the intermeeting 
+period.  There were no intervention operations in foreign currencies for the System’s account during 
+the intermeeting period. 
+Staff Review of the Economic Situation 
+The information available at the time of the meeting indicated that real GDP continued to expand in 
+2025, at a rate slightly below its 2024 pace.  Labor market conditions showed signs of stabilizing 
+following a period of gradual cooling.  Consumer price inflation remained somewhat elevated. 
+The unemployment rate was 4.4 percent in December, unchanged from its level in September.  The 
+average monthly change in total payrolls turned negative in the fourth quarter, reflecting a large drop 
+in government employment in October as workers rolled off payrolls after the end of the deferred 
+resignation program; average payroll gains in November and December were similar to the average 
+gains seen over the third quarter.  Average hourly earnings rose 3.8 percent over the 12 months 
+ending in December, slightly below their year-earlier pace. 
+Total consumer price inflation—as measured by the 12-month change in the price index for PCE—was 
+2.8 percent in November, a little higher than its year-earlier pace of 2.6 percent.  Core PCE price 
+inflation, which excludes changes in consumer energy prices and many consumer food prices, was 
+2.8 percent in November, compared with 3.0 percent a year earlier.  Core services price inflation had 
+declined relative to a year earlier, led by a deceleration in housing services prices.  However, core 
+goods price inflation had picked up over that period, a development that the staff largely attributed to 
+the effects of higher tariffs.  In December, the 12-month change in the CPI was 2.7 percent and core 
+CPI inflation was 2.6 percent; both were below their year-earlier rates.  Based on the CPI, the staff 
+estimated that total PCE price inflation was 2.9 percent in December and core PCE price inflation was 
+3.0 percent.  The staff also noted that data collection issues related to the government shutdown had 
+likely pushed down the levels of the CPI and the PCE price index in November and December. 6    January 27–28, 2026 
+Real GDP posted a solid gain in the third quarter.  Available indicators suggested that real GDP growth 
+had slowed in the fourth quarter, with the government shutdown estimated to have reduced fourth-
+quarter real GDP growth about 1 percentage point.  Real private domestic final purchases (PDFP)—
+which comprises PCE and private fixed investment and which often provides a better signal of 
+underlying economic momentum than does GDP—rose at the same average pace as real GDP over the 
+first three quarters of 2025; available indicators suggested that real PDFP growth also slowed in the 
+fourth quarter but less markedly than real GDP growth.  Nominal goods exports rose further in 
+October, while nominal goods imports declined sharply after falling in the third quarter.  Accordingly, 
+the goods trade deficit continued to narrow following a substantial widening at the start of 2025 that 
+resulted from a front-loading of imports ahead of anticipated tariff hikes. 
+Recent indicators suggested that foreign economic activity expanded at a below-trend pace in the 
+second half of last year.  U.S. tariffs continued to weigh on foreign manufacturing activity, notably for 
+Canada and Mexico in autos, aluminum, steel, and related industries.  By contrast, in some emerging 
+Asian economies, exports of high-tech products surged amid robust demand from the artificial 
+intelligence (AI) boom.  In China, activity was boosted by strong exports to markets other than the U.S. 
+Headline inflation continued to run near central bank targets in many foreign economies, although 
+upward pressures on food and services prices remained in some jurisdictions.  A few foreign central 
+banks cut their policy rates, including the Bank of England and the Bank of Mexico, but most others 
+left them unchanged.  The Bank of Japan was a notable exception, raising its key policy rate toward its 
+assessment of the neutral range. 
+Staff Review of the Financial Situation 
+The market-implied expected path of the federal funds rate, nominal Treasury yields, and swap-based 
+measures of inflation compensation were little changed, on net, over the intermeeting period.  Broad 
+equity price indexes rose modestly, on net, while credit spreads remained low by historical standards.  
+The one-month option-implied volatility on the S&P 500 index ended the period roughly unchanged at 
+a moderate level by historical standards. 
+Geopolitical developments led to some volatility in foreign financial markets over the intermeeting 
+period, but risk appetite quickly recovered.  On net, foreign equity price indexes rose and 
+outperformed U.S. counterparts, extending last year’s trend.  Japanese government bond yields 
+increased notably because of increased political uncertainty and investor concerns over fiscal 
+prospects, but spillovers to other advanced-economy yields were modest.  The dollar depreciated 
+against most currencies.  The Japanese yen appreciated late in the intermeeting period amid Minutes of the Federal Open Market Committee    7 
+speculation among market participants that authorities may intervene in foreign exchange markets to 
+support the yen.  
+Conditions in short-term funding markets were stable.  The Federal Reserve’s initiation of RMPs as 
+well as Treasury bill paydowns contributed to a reduction in upward pressures on money market rates. 
+The 25 basis point decrease in the target range for the federal funds rate in December quickly passed 
+through to secured and unsecured money market rates.  Year-end pressures in short-term funding 
+markets were subdued; conditions were supported by additional liquidity resulting from RMPs and a 
+smaller TGA, increased take-up of standing repo operations, and some dealers locking in financing 
+ahead of year-end.    
+In domestic credit markets, borrowing costs of businesses, households, and municipalities remained 
+significantly lower than the highs observed in 2023 but elevated relative to their average post–Global 
+Financial Crisis levels.  Yields on corporate bonds, leveraged loans, and commercial mortgage-backed 
+securities (CMBS) all declined somewhat over the intermeeting period, as did rates on 30-year fixed-
+rate conforming residential mortgages and new auto loans.   
+Credit remained generally available to most businesses, households, and municipalities.  Issuance 
+volumes in corporate bond, private credit, and long-term municipal bond markets were strong, and 
+bank loans continued to expand at a moderate pace.  By contrast, credit appeared to remain relatively 
+tight for small businesses and for people with low credit scores.    
+Responses to the January Senior Loan Officer Opinion Survey on Bank Lending Practices (SLOOS) 
+suggested a slight further easing in lending standards, on balance, in the fourth quarter, principally 
+reflecting eased standards for commercial real estate and consumer loans. 3  The overall level of bank 
+lending standards aggregated across all loan categories was estimated to be around the median level 
+observed since 2011.   
+Credit performance was stable but generally weaker than average pre-pandemic performance levels.  
+The 12-month trailing default rates for corporate bonds and leveraged loans decreased in November 
+and December.  For direct private lending borrowers, default rates remained low, but payment-in-kind 
+continued to be used to defer interest payments for many loans.  Delinquency rates on small business 
+and CMBS loans were little changed in November and remained elevated relative to pre-pandemic 
+levels.  For households, delinquency rates for most mortgage types remained near historical lows, 
+while those for credit card and auto loans remained above pre-pandemic levels.    
+3 The SLOOS results reported are based on banks’ responses, weighted by each bank’s outstanding loans in the respective loan 
+category, and might therefore differ from the results reported in the published SLOOS, which are based on banks’ unweighted 
+responses. 8    January 27–28, 2026 
+The staff provided an updated assessment of the stability of the U.S. financial system and, on balance, 
+continued to characterize the system’s financial vulnerabilities as notable.  The staff judged that asset 
+valuation pressures were elevated.  Price-to-earnings ratios for public equities stood at the upper end 
+of their historical distribution, reflecting, in part, expectations of strong earnings growth for technology 
+firms and elevated risk appetite among investors.  
+Vulnerabilities associated with nonfinancial business and household debt were characterized as 
+moderate.  Corporate debt grew modestly over the past few years, with growth concentrated in 
+investment-grade public corporations.  The financing of AI investment will likely entail higher debt 
+issuance going forward, but low debt loads at most technology firms and muted aggregate debt growth 
+in recent years suggest firms have the capacity to accommodate such growth.  
+Vulnerabilities associated with leverage in the financial sector were characterized as notable.  
+Available data suggested that leverage remained high at hedge funds and life insurance companies. 
+By contrast, bank regulatory capital ratios were high, although their market-adjusted capital ratios 
+remained depressed and sensitive to long-term interest rates. 
+Vulnerabilities associated with funding risks were characterized as moderate.  The amount of total 
+short-run funding instruments and cash-management vehicles as a fraction of GDP  remained in the 
+middle of its historical range, uninsured deposits at banks were likewise within historical norms, and 
+funding risks associated with nontraditional short-term liabilities at life insurance companies were low. 
+The total market capitalization of stablecoins, some of which may be vulnerable to runs, grew 
+significantly in the past two years but remained low relative to other funding instruments. 
+Staff Economic Outlook 
+The staff projection for economic activity was stronger than the one prepared for the December 
+meeting, reflecting incoming data, greater expected support from financial conditions, and a small 
+upward revision to the projected path of potential output.  Real GDP growth was expected to outpace 
+potential growth through 2028 as the drag from higher tariffs waned and as fiscal policy and financial 
+market conditions continued to support spending.  As a result, the unemployment rate was expected 
+to decline gradually starting this year, moving below the staff’s estimate of its natural rate by the end 
+of the year and remaining below the natural rate through 2028. 
+The staff’s inflation forecast was slightly higher, on balance, than the one prepared for the December 
+meeting, reflecting the expectation that resource utilization would be tighter and the path of core 
+import prices would be higher than previously projected.  With the effect of higher tariffs on inflation 
+expected to wane starting around the middle of this year, inflation was projected to return to its 
+previous disinflationary trend. Minutes of the Federal Open Market Committee    9 
+The staff continued to view the uncertainty around the forecast as elevated in light of ongoing 
+uncertainty about geopolitical developments, government policy changes and their effects, and the 
+effect of AI on the economy.  In addition, delays in statistical releases and related data-quality issues 
+were providing an additional source of uncertainty.  In an environment of high economic uncertainty, 
+risks around the forecasts for employment and real GDP growth continued to be seen as skewed to 
+the downside.  Risks to the inflation projection continued to be viewed as skewed to the upside:  With 
+inflation having remained above 2 percent since early 2021, a salient risk was that inflation would 
+prove to be more persistent than the staff anticipated. 
+Participants’ Views on Current Conditions and the Economic Outlook 
+Participants observed that overall inflation had eased significantly from its highs in 2022 but 
+remained somewhat elevated relative to the Committee’s 2 percent longer-run goal.  Participants 
+generally noted that these elevated readings largely reflected inflation in core goods, which appeared 
+to have been boosted by the effects of tariff increases.  In contrast to prices for core goods, some 
+participants commented that disinflation appeared to be continuing for core services, particularly for 
+housing services.   
+Regarding the outlook for inflation, participants anticipated that inflation would move down toward the 
+Committee’s 2 percent objective, though the pace and timing of this decline remained uncertain.  
+Participants generally expected that the effects of tariffs on core goods prices would likely start to 
+diminish this year.  Several participants remarked that the ongoing moderation in inflation for housing 
+services was likely to continue to exert downward pressure on overall inflation.  Several participants 
+also expected higher productivity growth associated with technological or regulatory developments to 
+put downward pressure on inflation.  Consistent with that view, a few participants mentioned reports 
+from business contacts that firms were automating more operations and using other measures to help 
+offset cost increases, which would reduce the need to pass those increases on to consumer prices or 
+to reduce margins.  Most participants, however, cautioned that progress toward the Committee’s 2 
+percent objective might be slower and more uneven than generally expected and judged that the risk 
+of inflation running persistently above the Committee’s objective was meaningful.  Some of these 
+participants cited reports from business contacts who expected to increase prices this year in 
+response to cost pressures, including those related to tariffs.  Several participants also raised the 
+possibility that sustained demand pressures could keep inflation elevated relative to the Committee’s 
+2 percent objective.   
+Participants noted that most measures of longer-term inflation expectations remained consistent with 
+the Committee’s 2 percent objective.  In addition, several participants highlighted the fact that market- 10    January 27–28, 2026 
+and survey-based measures of near-term inflation expectations had declined from their peaks in the 
+spring of last year.  
+With regard to the labor market, participants observed that the unemployment rate had held steady, 
+on net, in recent months, while job gains had remained low.  Most participants noted that recent data 
+readings such as those for the unemployment rate, layoffs, and job openings suggested that labor 
+market conditions may be stabilizing after a period of gradual cooling.  Almost all participants 
+observed that while the level of layoffs remained low, hiring remained low as well.  Consistent with that 
+observation, several participants noted that their business contacts continued to express caution in 
+hiring decisions, reflecting uncertainty about the economic outlook and the effect of AI and other 
+automation technologies on the labor market.  Some participants pointed to supply factors, such as 
+lower net immigration, as contributing to the low pace of job gains.   
+While participants generally assessed that, under appropriate monetary policy, the labor market likely 
+would stabilize and then improve this year, they continued to note that the outlook for the labor 
+market remained uncertain.  The vast majority of participants judged that labor market conditions had 
+been showing some signs of stabilization and that downside risks to the labor market had diminished.  
+Some participants, however, noted that even though the labor market was showing signs of 
+stabilization, some indicators such as survey measures of job availability and the share of those 
+working part time for economic reasons continued to suggest softening of conditions.  In addition, 
+most participants noted that downside risks to the labor market remained.  In particular, some 
+participants pointed to the possibility that a further fall in labor demand could push the unemployment 
+rate sharply higher in a low-hiring environment or that the concentration of job gains in a few less 
+cyclically sensitive sectors was potentially signaling heightened vulnerability in the overall labor 
+market.   
+Participants observed that economic activity appeared to be expanding at a solid pace.  Participants 
+generally noted that consumer spending had been resilient, importantly supported by gains in 
+household wealth.  While aggregate consumption was seen as resilient, several participants cited 
+reports from business contacts or recent analysis indicating a disparity between strong sales to higher-
+income consumers and soft sales to lower-income consumers.  Participants observed that business 
+fixed investment remained robust, particularly in the technology sector.  In the agricultural sector, a 
+couple of participants remarked that the crop sector had remained weak, while the livestock sector 
+had stayed strong.   
+Participants generally anticipated that the pace of economic growth would remain solid in 2026, 
+though uncertainty about the outlook for growth remained high.  Most participants expected growth to 
+be supported by continued favorable financial conditions, fiscal policy, or changes in regulatory policy. Minutes of the Federal Open Market Committee    11 
+Moreover, in light of the strong pace of AI-related investment as well as the higher productivity growth 
+of recent years, several participants judged that ongoing gains in productivity would be supportive of 
+economic growth. 
+In their discussion of financial stability, several participants commented on high asset valuations and 
+historically low credit spreads.  Some participants discussed potential vulnerabilities associated with 
+recent developments in the AI sector, including elevated equity market valuations, high concentration 
+of market values and activities in a small number of firms, and increased debt financing.  A few 
+participants commented that the financing of the AI-related infrastructure buildout in opaque private 
+markets warranted monitoring.  Several participants highlighted vulnerabilities associated with the 
+private credit sector and its provision of credit to riskier borrowers, including risks related to 
+interconnections with other types of nonbank financial institutions, such as insurance companies, and 
+banks’ exposure to this sector.  Several participants commented on risks associated with hedge funds, 
+including their growing footprint in Treasury and equity markets, rising leverage, and continued 
+expansion of relative value trades that could make the Treasury market more vulnerable to shocks.  A 
+couple of participants commented that although consumer credit quality remained solid in the 
+aggregate, there were signs of weakness in the financial positions of low- and medium-income 
+households.  A few participants noted the need to monitor potential spillovers from volatility in global 
+bond markets and foreign exchange. 
+In their consideration of monetary policy at this meeting, participants noted that inflation had 
+remained somewhat elevated and that available indicators suggested that economic activity had been 
+expanding at a solid pace.  They observed that job gains had remained low and that the 
+unemployment rate had shown some signs of stabilization.  Against this backdrop, almost all 
+participants supported maintaining the current target range for the federal funds rate at this meeting, 
+while a couple of participants preferred to lower the target range.  Those who favored maintaining the 
+target range generally viewed that, after the 75 basis point lowering of the target range last year, the 
+current stance of monetary policy was within the range of estimates of the neutral level.  They 
+commented that maintaining the current target range of the federal funds rate at this meeting would 
+leave policymakers well positioned to determine the extent and timing of additional adjustments to the 
+policy rate, with these judgments being based on the incoming data, the evolving outlook, and the 
+balance of risks.  Those who preferred to lower the target range at this meeting expressed concerns 
+that the current stance of the policy rate was still meaningfully restrictive and viewed downside risks 
+to the labor market as a more prominent policy concern than the risk of persistently elevated inflation.  
+In considering the outlook for monetary policy, several participants commented that further downward 
+adjustments to the target range for the federal funds rate would likely be appropriate if inflation were 
+to decline in line with their expectations.  Some participants commented that it would likely be 12    January 27–28, 2026 
+appropriate to hold the policy rate steady for some time as the Committee carefully assesses incoming 
+data, and a number of these participants judged that additional policy easing may not be warranted 
+until there was clear indication that the progress of disinflation was firmly back on track.  Several 
+participants indicated that they would have supported a two-sided description of the Committee’s 
+future interest rate decisions, reflecting the possibility that upward adjustments to the target range for 
+the federal funds rate could be appropriate if inflation remains at above-target levels.  All participants 
+agreed that monetary policy was not on a preset course and would be informed by a wide range of 
+incoming data, the evolving economic outlook, and the balance of risks. 
+In discussing risk-management considerations that could bear on the outlook for monetary policy, the 
+vast majority of participants judged that downside risks to employment had moderated in recent 
+months while the risk of more persistent inflation remained, and some commented that those risks 
+had come into better balance.  Several participants cautioned that easing policy further in the context 
+of elevated inflation readings could be misinterpreted as implying diminished policymaker 
+commitment to the 2 percent inflation objective, perhaps making higher inflation more entrenched.  
+By contrast, a few participants highlighted the risk that labor market conditions could deteriorate 
+significantly while expressing confidence that inflation would continue to decline.  These participants 
+cautioned that keeping policy overly restrictive could risk further deterioration in the labor market.  
+Participants judged that a careful balancing of risks was required to achieve the Committee’s dual-
+mandate objectives. 
+Committee Policy Actions 
+In their discussions of monetary policy for this meeting, members agreed that available indicators 
+suggested that economic activity had been expanding at a solid pace.  Almost all members agreed 
+that recent developments in the labor market indicated that job gains had remained low and that the 
+unemployment rate had showed some signs of stabilization.  Similarly, reflecting recent data on 
+inflation, members agreed that inflation remained somewhat elevated, and with the turn of the 
+calendar year, they agreed to remove the reference to inflation relative to readings from earlier last 
+year.  Members agreed that the Committee was attentive to the risks to both sides of its dual 
+mandate, but almost all members no longer judged that downside risks to employment had risen in 
+recent months.  
+In support of its goals, almost all members decided to maintain the target range for the federal funds 
+rate at 3½ to 3¾ percent.  Two members voted against that decision and preferred to lower the target 
+range by ¼ percentage point.  Members agreed that in considering the extent and timing 
+of additional adjustments to the target range for the federal funds rate, the Committee would carefully 
+assess incoming data, the evolving outlook, and the balance of risks.  Members agreed that Minutes of the Federal Open Market Committee    13 
+the postmeeting statement should affirm their strong commitment both to supporting maximum 
+employment and to returning inflation to the Committee’s 2 percent objective.   
+Members agreed that in assessing the appropriate stance of monetary policy, the 
+Committee would continue to monitor the implications of incoming information for the economic 
+outlook.  They would be prepared to adjust the stance of monetary policy as appropriate 
+if risks emerged that could impede the attainment of the Committee’s goals.  Members also agreed 
+that their assessments would take into account a wide range of information, including readings on 
+labor market conditions, inflation pressures and inflation expectations, and financial and international 
+developments.  
+At the conclusion of the discussion, the Committee voted to direct the Federal Reserve Bank of New 
+York, until instructed otherwise, to execute transactions in the SOMA in accordance with the following 
+domestic policy directive, for release at 2:00 p.m.: 
+“Effective January 29, 2026, the Federal Open Market Committee directs the Desk to: 
+ Undertake open market operations as necessary to maintain the federal funds rate in a
+target range of 3½ to 3¾ percent.
+ Conduct standing overnight repurchase agreement operations at a rate of 3.75 percent.
+ Conduct standing overnight reverse repurchase agreement operations at an offering rate
+of 3.5 percent and with a per-counterparty limit of $160 billion per day.
+ Increase the System Open Market Account holdings of securities through purchases of
+Treasury bills and, if needed, other Treasury securities with remaining maturities of
+3 years or less to maintain an ample level of reserves.
+ Roll over at auction all principal payments from the Federal Reserve’s holdings of
+Treasury securities.  Reinvest all principal payments from the Federal Reserve’s holdings
+of agency securities into Treasury bills.”
+The vote also encompassed approval of the statement below for release at 2:00 p.m.: 
+“Available indicators suggest that economic activity has been expanding at a solid pace.  Job 
+gains have remained low, and the unemployment rate has shown some signs of stabilization. 
+Inflation remains somewhat elevated. 
+The Committee seeks to achieve maximum employment and inflation at the rate of 2 percent 
+over the longer run.  Uncertainty about the economic outlook remains elevated.  The 
+Committee is attentive to the risks to both sides of its dual mandate. 14    January 27–28, 2026 
+In support of its goals, the Committee decided to maintain the target range for the federal 
+funds rate at 3½ to 3¾ percent.  In considering the extent and timing of additional 
+adjustments to the target range for the federal funds rate, the Committee will carefully assess 
+incoming data, the evolving outlook, and the balance of risks.  The Committee is strongly 
+committed to supporting maximum employment and returning inflation to its 2 percent 
+objective. 
+In assessing the appropriate stance of monetary policy, the Committee will continue to 
+monitor the implications of incoming information for the economic outlook.  The Committee 
+would be prepared to adjust the stance of monetary policy as appropriate if risks emerge that 
+could impede the attainment of the Committee’s goals.  The Committee’s assessments will 
+take into account a wide range of information, including readings on labor market conditions, 
+inflation pressures and inflation expectations, and financial and international developments.” 
+Voting for this action:  Jerome H. Powell, John C. Williams, Michael S. Barr, Michelle W. Bowman, Lisa 
+D. Cook, Beth M. Hammack, Philip N. Jefferson, Neel Kashkari, Lorie K. Logan, and Anna Paulson.
+Voting against this action:  Stephen I. Miran and Christopher J. Waller. 
+Stephen I. Miran and Christopher J. Waller preferred to lower the target range for the federal funds 
+rate by ¼ percentage point at this meeting. 
+Consistent with the Committee’s decision to leave the target range for the federal funds rate 
+unchanged, the Board of Governors of the Federal Reserve System voted unanimously to maintain the 
+interest rate paid on reserve balances at 3.65 percent, effective January 29, 2026.  The Board of 
+Governors of the Federal Reserve System voted unanimously to approve the establishment of the 
+primary credit rate at the existing level of 3.75 percent. 
+It was agreed that the next meeting of the Committee would be held on Tuesday–Wednesday, 
+March 17–18, 2026.  The meeting adjourned at 10:15 a.m. on January 28, 2026. 
+Notation Vote 
+By notation vote completed on December 29, 2025, the Committee unanimously approved the 
+minutes of the Committee meeting held on December 9–10, 2025. 
+Attendance 
+Jerome H. Powell, Chair 
+John C. Williams, Vice Chair 
+Michael S. Barr 
+Michelle W. Bowman Minutes of the Federal Open Market Committee    15 
+Lisa D. Cook 
+Beth M. Hammack 
+Philip N. Jefferson 
+Neel Kashkari 
+Lorie K. Logan 
+Stephen I. Miran 
+Anna Paulson 
+Christopher J. Waller 
+Thomas I. Barkin, Raphael W. Bostic, Mary C. Daly, Austan D. Goolsbee, and Sushmita Shukla, 
+Alternate Members of the Committee 
+Susan M. Collins, Alberto G. Musalem, and Jeffrey R. Schmid, Presidents of the Federal Reserve Banks 
+of Boston, St. Louis, and Kansas City, respectively 
+Joshua Gallin, Secretary 
+Matthew M. Luecke, Deputy Secretary 
+Brian J. Bonis, Assistant Secretary 
+Michelle A. Smith, Assistant Secretary 
+Mark E. Van Der Weide, General Counsel 
+Richard Ostrander, Deputy General Counsel 
+Trevor A. Reeve, Economist 
+Stacey Tevlin, Economist 
+Beth Anne Wilson, Economist 
+Stephanie R. Aaronson, Shaghil Ahmed, Kartik B. Athreya, Michael T. Kiley, Elizabeth Klee, Edward S. 
+Knotek II, Karel Mertens, and Andrea Raffo, Associate Economists 
+Roberto Perli, Manager, System Open Market Account 
+Julie Ann Remache, Deputy Manager, System Open Market Account 
+Jose Acosta, Senior System Engineer II, Division of Information Technology, Board 
+Isaiah C. Ahn, Information Management Analyst, Division of Monetary Affairs, Board 
+Mary L. Aiken,4 Acting Director, Division of Supervision and Regulation, Board 
+Alyssa Arute, Assistant Director, Division of Reserve Bank Operations and Payment Systems, Board 
+Alessandro Barbarino, Special Adviser to the Board, Division of Board Members, Board 
+Camille Bryan, Senior Project Manager, Division of Monetary Affairs, Board 
+Isabel Cairó, Group Manager, Division of Monetary Affairs, Board 
+Michele Cavallo, Special Adviser to the Board, Division of Board Members, Board 
+Andrew Cohen,5 Special Adviser to the Board, Division of Board Members, Board 
+Stephanie E. Curcuru, Deputy Director, Division of International Finance, Board 
+Marnie Gillis DeBoer,6 Senior Associate Director, Division of Monetary Affairs, Board 
+Wendy E. Dunn, Adviser, Division of Research and Statistics, Board 
+4 Attended through the discussion of the economic and financial situation. 
+5 Attended the discussion of the economic and financial situation. 
+6 Attended through the discussion of developments in financial markets and open market operations.  16    January 27–28, 2026 
+Burcu Duygan-Bump, Senior Associate Director, Division of Research and Statistics, Board 
+Laura J. Feiveson, Special Adviser to the Board, Division of Board Members, Board 
+Erin E. Ferris, Principal Economist, Division of Monetary Affairs, Board 
+Glenn Follette, Associate Director, Division of Research and Statistics, Board 
+Greg Frischmann,7 Senior Special Counsel, Legal Division, Board; Special Adviser to the Board, 
+Division of Board Members, Board 
+Jenn Gallagher, Assistant to the Board, Division of Board Members, Board 
+Carlos Garriga, Senior Vice President, Federal Reserve Bank of St. Louis 
+David P. Glancy, Principal Economist, Division of Monetary Affairs, Board 
+Joseph W. Gruber, Executive Vice President, Federal Reserve Bank of Kansas City 
+Luca Guerrieri, Senior Associate Director, Division of International Finance, Board 
+Christopher J. Gust, Associate Director, Division of Monetary Affairs, Board 
+Valerie S. Hinojosa, Section Chief, Division of Monetary Affairs, Board 
+Jane E. Ihrig, Special Adviser to the Board, Division of Board Members, Board 
+Scott R. Konzem, Senior Economic Modeler II, Division of Monetary Affairs, Board 
+Anna R. Kovner, Executive Vice President, Federal Reserve Bank of Richmond 
+Spencer D. Krane, Senior Vice President, Federal Reserve Bank of Chicago 
+Sylvain Leduc, Executive Vice President and Director of Economic Research, Federal Reserve Bank of 
+San Francisco 
+Andreas Lehnert, Director, Division of Financial Stability, Board 
+Paul Lengermann, Deputy Associate Director, Division of Research and Statistics, Board 
+Natalie Leonard,6 Associate, Federal Reserve Bank of New York 
+Kurt F. Lewis, Special Adviser to the Chair, Division of Board Members, Board 
+Logan T. Lewis, Assistant Director, Division of International Finance, Board 
+Stephen F. Lin, Principal Economist, Division of Research and Statistics, Board 
+Laura Lipscomb, Special Adviser to the Board, Division of Board Members, Board 
+Benjamin W. McDonough, Deputy Secretary and Ombudsman, Office of the Secretary, Board 
+Radhika Mithal,6 Associate Director, Federal Reserve Bank of New York 
+Makoto Nakajima, Vice President, Federal Reserve Bank of Philadelphia 
+Anna Nordstrom, Head of Markets, Federal Reserve Bank of New York 
+Giovanni Olivei, Senior Vice President, Federal Reserve Bank of Boston 
+Julio L. Ortiz, Senior Economist, Division of International Finance, Board 
+7  Attended Wednesday’s session only. Minutes of the Federal Open Market Committee    17 
+Karen M. Pence, Deputy Associate Director, Division of Research and Statistics, Board 
+Caterina Petrucco-Littleton, Deputy Associate Director, Division of Consumer and Community Affairs, 
+Board 
+Brian Phillips,8 Special Counsel, Legal Division, Board; Special Adviser to the Board, Division of Board 
+Members, Board 
+Eugenio P. Pinto, Special Adviser to the Board, Division of Board Members, Board 
+Odelle Quisumbing,4 Assistant to the Secretary, Office of the Secretary, Board 
+Achilles Sangster II, Lead Information Manager, Division of Monetary Affairs, Board 
+Zeynep Senyuz, Special Adviser to the Board, Division of Board Members, Board 
+Paula Tkac, Director of Research, Federal Reserve Bank of Atlanta 
+Skander J. Van den Heuvel, Associate Director, Division of Financial Stability, Board 
+Francisco Vazquez-Grande, Group Manager, Division of Monetary Affairs, Board 
+Cheryl L. Venable, First Vice President, Federal Reserve Bank of Atlanta 
+Annette Vissing-Jørgensen, Senior Adviser, Division of Monetary Affairs, Board 
+Jeffrey D. Walker, Senior Associate Director, Division of Reserve Bank Operations and Payment 
+Systems, Board 
+William Wascher, Deputy Director, Division of Research and Statistics, Board 
+Min Wei, Senior Associate Director, Division of Monetary Affairs, Board 
+Randall A. Williams,9 Group Manager, Division of Monetary Affairs, Board 
+Filip Zikes, Special Adviser to the Board, Division of Board Members, Board 
+_______________________ 
+Joshua Gallin 
+Secretary 
+8 Attended from the discussion of the economic and financial situation through the end of Tuesday’s session. 
+9 Attended the discussion of current monetary policy. 

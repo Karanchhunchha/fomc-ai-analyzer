@@ -1,0 +1,29 @@
+.env
+venv/
+__pycache__/
+*.pyc
+data/chroma_db/
+logs/
+*.log
+
+# Databases
+*.db
+*.db-journal
+backend/data/*.db
+backend/data/*.db-journal
+
+# Processed and temporary data
+data/processed/
+data/chunks/
+data/embeddings/
+data/raw/601.MIS.pdf
+data/raw/604.CG.pdf
+data/raw/resume*.pdf
+
+# Frontend build outputs and logs
+frontend/.next/
+frontend/node_modules/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+.DS_Store

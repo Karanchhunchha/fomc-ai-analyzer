@@ -1,0 +1,14 @@
+services:
+  # FastAPI RAG Backend Service
+  - type: web
+    name: fomc-ai-analyzer-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.api:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: true # Requires user input on Render dashboard
+      - key: MIN_SIMILARITY_THRESHOLD
+        value: "0.50"
+      - key: TOP_K_RETRIEVAL
+        value: "5"
