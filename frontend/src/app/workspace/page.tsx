@@ -527,20 +527,30 @@ export default function Workspace() {
     let i = 0;
 
     const renderInline = (line: string, keyPrefix: string) => {
-      const parts = line.split(/(\[Excerpt \d+\])/g);
+      // Matches [Excerpt 1], [Excerpt 1, Excerpt 2], [Excerpt 1, 2], [1], [1, 2] etc.
+      const citationRegex = /(\[(?:Excerpt\s*)?\d+(?:\s*,\s*(?:Excerpt\s*)?\d+)*\])/g;
+      const parts = line.split(citationRegex);
       return parts.map((part, pIdx) => {
-        const match = part.match(/\[Excerpt (\d+)\]/);
-        if (match) {
-          const num = parseInt(match[1]);
-          return (
-            <button
-              key={`${keyPrefix}-cite-${pIdx}`}
-              onClick={() => handleCitationClick(num, msgSources, msgScores)}
-              className="inline-flex items-center mx-1 px-1.5 py-0.5 rounded text-[11px] font-mono font-semibold bg-[var(--accent-dim)] hover:bg-[var(--accent)]/20 border border-[var(--accent)]/20 text-[var(--accent)] cursor-pointer transition-colors duration-150"
-            >
-              [{num}]
-            </button>
-          );
+        if (part.startsWith('[') && part.endsWith(']') && part.length > 2) {
+          const numbers = part.match(/\d+/g);
+          if (numbers && numbers.length > 0) {
+            return (
+              <span key={`${keyPrefix}-cite-group-${pIdx}`} className="inline-flex items-center space-x-1 mx-0.5">
+                {numbers.map((numStr, nIdx) => {
+                  const num = parseInt(numStr);
+                  return (
+                    <button
+                      key={`${keyPrefix}-cite-${pIdx}-${nIdx}`}
+                      onClick={() => handleCitationClick(num, msgSources, msgScores)}
+                      className="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-mono font-semibold bg-[var(--accent-dim)] hover:bg-[var(--accent)]/20 border border-[var(--accent)]/20 text-[var(--accent)] cursor-pointer transition-colors duration-150"
+                    >
+                      [{num}]
+                    </button>
+                  );
+                })}
+              </span>
+            );
+          }
         }
         const boldParts = part.split(/(\*{1,2}[^*]+\*{1,2})/g);
         return (
