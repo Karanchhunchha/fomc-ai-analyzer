@@ -13,6 +13,7 @@ This repository contains the complete implementation of the **FOMC AI Analyzer**
 ### 📄 Submission Details
 - **Project Owner**: Karan Chhunchha ([karanchhunchha@gmail.com](mailto:karanchhunchha@gmail.com))
 - **Challenge Title**: Federal Open Market Committee Minutes Analysis with Large Language Models (Challenge #258)
+- **Official Challenge Page**: [MathWorks Excellence in AI Challenge - Project #258](https://github.com/mathworks/MATLAB-Simulink-Challenge-Project-Hub/tree/main/projects/Federal%20Open%20Market%20Committee%20Minutes%20Analysis%20with%20Large%20Language%20Models)
 - **License**: MIT License (see root [LICENSE](file:///d:/fomc-ai-analyzer/LICENSE))
 - **AI Usage Acknowledgment**: Fully documented in [AI_ACKNOWLEDGMENT.md](file:///d:/fomc-ai-analyzer/AI_ACKNOWLEDGMENT.md) per MathWorks GenAI submission policy.
 - **System Architecture**: **Hybrid MATLAB-Python Production Pipeline**. MATLAB operates as the core analytics, download, and validation layers (utilizing Text Analytics, Statistics, and Database Toolboxes), while Python (FastAPI + SentenceTransformers/CrossEncoder + ChromaDB) acts as the high-concurrency vector search microservice bridging the Next.js researcher workspace terminal.
