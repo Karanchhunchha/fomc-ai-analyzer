@@ -14,7 +14,7 @@ RAW_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "raw")
 def ensure_dirs():
     os.makedirs(RAW_DIR, exist_ok=True)
 
-def fetch_fomc_minutes(max_downloads=2):
+def fetch_fomc_minutes(max_downloads=20):
     """
     Scrape the Federal Reserve FOMC calendar for recent meeting minutes and download them.
     """

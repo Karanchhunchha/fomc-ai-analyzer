@@ -28,6 +28,7 @@ class RAGPipeline:
             self.client = OpenAI(
                 base_url="https://openrouter.ai/api/v1",
                 api_key=config.OPENROUTER_API_KEY,
+                max_retries=0,
             )
         
     def classify_mode(self, query):
@@ -56,7 +57,7 @@ class RAGPipeline:
             
         return "research"
 
-    def generate_prompt(self, query, search_results, mode):
+    def generate_prompt(self, query, search_results, mode, threshold=0.25):
         """Build a mode-specific strict prompt forcing the LLM to only use the provided context with metadata."""
         context_blocks = []
         for i, text in enumerate(search_results['text']):
@@ -65,8 +66,11 @@ class RAGPipeline:
             date = meta.get('meeting_date', 'Unknown')
             section = meta.get('section_name', 'Overview')
             summary = meta.get('semantic_summary', '')
+            hawkish = meta.get('hawkish_score', 0.0)
+            topics = meta.get('topics', 'Unknown')
+            score = search_results['similarity_scores'][i] if 'similarity_scores' in search_results and i < len(search_results['similarity_scores']) else 0.0
             context_blocks.append(
-                f"Excerpt {i+1} [Source: {source} | Date: {date} | Section: {section} | Summary: {summary}]:\n{text}"
+                f"Excerpt {i+1} [Similarity Score: {score:.4f} | Source: {source} | Date: {date} | Section: {section} | Hawkish Score: {hawkish} | Topics: {topics} | Summary: {summary}]:\n{text}"
             )
             
         context_str = "\n\n---\n\n".join(context_blocks)
@@ -111,8 +115,24 @@ CRITICAL INSTRUCTIONS:
 - You MUST answer ONLY using the facts and information directly found in the provided context excerpts.
 - If the retrieved context does not contain relevant information to confidently answer the question, you MUST return exactly: "The retrieved documents do not contain enough relevant information to answer this confidently."
 - Do NOT speculate, extrapolate, or use outside technical, economic, or general knowledge.
+- NEVER fabricate specific dates, interest rates, vote counts, percentage figures, or policy decisions that are not explicitly stated in the provided excerpts. If a specific number is not in the excerpts, say "the excerpts do not specify."
 - Write a natural, flowing response. Avoid repeating chunks verbatim or sounding like a robotic list.
 - For statements of fact or claims, cite the corresponding Excerpt number(s) (e.g., "[Excerpt 1]"). Do not spam citations; cite only where direct, concrete evidence supports the claim.
+- When the answer spans multiple FOMC meetings, explicitly name each meeting date referenced (e.g., "At the January 28-29, 2026 meeting...").
+- USE THE SENTIMENT AND TOPICS: Take into account the provided "Hawkish Score" (from -1.0 highly dovish to +1.0 highly hawkish) and "Topics" to provide deeper insights into the overall tone and subject matter of the excerpts.
+
+CONFIDENCE & EVIDENCE RULES:
+- Compare the similarity score of each excerpt against the relevance threshold (threshold is {threshold:.2f}).
+- Count how many excerpts directly and substantively support your answer and have a similarity score above the threshold.
+- If fewer than 2 excerpts score above the threshold (relevance threshold is {threshold:.2f}), you MUST prefix your response with exactly: "⚠️ LIMITED EVIDENCE: "
+- At the END of your response, on its own line, write exactly one of:
+  CONFIDENCE: HIGH
+  CONFIDENCE: MEDIUM
+  CONFIDENCE: LOW
+  Rules for confidence level:
+  - HIGH: if 3 or more strong excerpts directly support the answer.
+  - MEDIUM: if 1-2 excerpts are relevant.
+  - LOW: if fewer than 2 excerpts score above threshold (meaning evidence is indirect, sparse, or tangential).
 
 CONTEXT EXCERPTS:
 {context_str}
@@ -144,8 +164,14 @@ ANSWER:"""
         
         yield sse("status", "Retrieving semantic evidence...")
         
-        # 1. Retrieve semantic context
-        search_results = self.searcher.search(user_query, top_k=top_k)
+        # 1. Enhance query with formal terminology and synonyms
+        from backend.query_rewriter import enhance_query_for_search
+        enhanced_query = enhance_query_for_search(user_query)
+        if enhanced_query != user_query:
+            logger.info(f"Query enhanced: '{user_query}' -> '{enhanced_query}'")
+        
+        # 2. Retrieve semantic context
+        search_results = self.searcher.search(enhanced_query, top_k=top_k)
         
         # 2. Extract similarity scores and check threshold
         has_results = bool(search_results['text'])
@@ -213,25 +239,57 @@ ANSWER:"""
         })
         
         # 3. Construct prompt
-        prompt = self.generate_prompt(user_query, search_results, mode)
+        prompt = self.generate_prompt(user_query, search_results, mode, threshold=threshold)
         
         yield sse("status", "Generating grounded answer...")
         
-        # 4. Generate response using Gemini 1.5 Flash primarily, fallback to OpenRouter
+        # 4. Generate response using Gemini primarily, fallback to OpenRouter
         success = False
         answer = ""
+        last_error_details = "Unknown connection issue"
         max_retries = 3
         retry_delay = 4 # seconds
+        GEMINI_TIMEOUT_SECONDS = 25
         
         for attempt in range(1, max_retries + 1):
             try:
                 logger.info(f"Calling Gemini API stream (attempt {attempt})...")
-                response = self.model.generate_content(prompt, stream=True)
-                for chunk in response:
-                    if chunk.text:
-                        answer += chunk.text
-                        yield sse("chunk", chunk.text)
+                
+                # Wrap the blocking generate_content call in a thread with timeout
+                # to protect against both initial connection hangs AND slow streaming.
+                from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
+                
+                def _gemini_sync_call():
+                    """Collect Gemini streamed chunks in a background thread."""
+                    collected = []
+                    resp = self.model.generate_content(prompt, stream=True)
+                    for chunk in resp:
+                        try:
+                            if chunk.text:
+                                collected.append(chunk.text)
+                        except Exception:
+                            pass
+                    return collected
+                
+                with ThreadPoolExecutor(max_workers=1, thread_name_prefix="gemini") as executor:
+                    future = executor.submit(_gemini_sync_call)
+                    try:
+                        chunks_list = future.result(timeout=GEMINI_TIMEOUT_SECONDS)
+                    except FuturesTimeoutError:
+                        future.cancel()
+                        raise TimeoutError(f"Gemini call exceeded {GEMINI_TIMEOUT_SECONDS}s timeout")
+                
+                # Stream collected chunks to client
+                for text_chunk in chunks_list:
+                    answer += text_chunk
+                    yield sse("chunk", text_chunk)
+                    
                 success = True
+                break
+            except TimeoutError as te:
+                logger.error(f"Gemini timeout: {te}. Trying OpenRouter fallback...")
+                last_error_details = f"Gemini timed out after {GEMINI_TIMEOUT_SECONDS}s"
+                yield sse("status", f"Query timed out after {GEMINI_TIMEOUT_SECONDS}s. Switching to fallback model...")
                 break
             except Exception as e:
                 err_str = str(e).lower()
@@ -247,6 +305,7 @@ ANSWER:"""
                     retry_delay *= 2  # Exponential backoff
                 else:
                     logger.error(f"Gemini generation failed: {e}. Trying OpenRouter fallback...")
+                    last_error_details = f"Gemini failed: {str(e)}"
                     break
                     
         if not success:
@@ -270,6 +329,7 @@ ANSWER:"""
                     except Exception as e2:
                         err_str = str(e2).lower()
                         logger.error(f"OpenRouter fallback failed on attempt {or_attempt}: {e2}")
+                        last_error_details = f"OpenRouter failed: {str(e2)}"
                         if "429" in err_str and or_attempt < 2:
                             yield sse("status", "Kimi is rate-limited upstream. Waiting to retry...")
                             time.sleep(5)
@@ -282,7 +342,7 @@ ANSWER:"""
                 logger.error("No OpenRouter fallback configured.")
                 
         if not success:
-            err_msg = "\n[An error occurred while generating the response.]"
+            err_msg = f"\n[An error occurred while generating the response. Details: {last_error_details}]"
             yield sse("chunk", err_msg)
             answer += err_msg
             

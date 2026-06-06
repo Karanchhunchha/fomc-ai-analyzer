@@ -47,6 +47,9 @@ export default function RootLayout({
           <a href="/insights" className="text-white/40 hover:text-white transition-colors" title="Insights">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
           </a>
+          <a href="/sessions" className="text-white/40 hover:text-white transition-colors" title="History">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline><path d="M12 2a10 10 0 0 0-7.38 3.4L3 7"></path><polyline points="3 3 3 7 7 7"></polyline></svg>
+          </a>
         </nav>
         
         {/* Main Content Area */}

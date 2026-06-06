@@ -1,7 +1,11 @@
+import os
+# Disable ChromaDB telemetry BEFORE importing chromadb to avoid capture() argument errors
+os.environ["CHROMA_TELEMETRY"] = "false"
+os.environ["ANONYMIZED_TELEMETRY"] = "false"
+
 import chromadb
 import json
 import logging
-import os
 from chromadb.config import Settings
 
 logger = logging.getLogger(__name__)
@@ -15,7 +19,10 @@ class VectorStore:
         
         # Initialize ChromaDB client with persistence
         os.makedirs(self.db_path, exist_ok=True)
-        self.client = chromadb.PersistentClient(path=self.db_path)
+        self.client = chromadb.PersistentClient(
+            path=self.db_path,
+            settings=Settings(anonymized_telemetry=False)
+        )
         
         # Get or create the collection
         self.collection = self.client.get_or_create_collection(name=self.collection_name)
@@ -41,15 +48,17 @@ class VectorStore:
                 embeddings.append(item["embedding"])
                 documents.append(item["chunk_text"])
                 
-                # Format metadata
+                # Format metadata to ensure ChromaDB compatibility (no None, dict, or list values)
                 metadata = {
-                    "chunk_id": item["chunk_id"],
-                    "meeting_date": item.get("meeting_date", "Unknown"),
-                    "source_document": item.get("source_document", "Unknown"),
-                    "section_name": item.get("section_name", "Overview"),
-                    "semantic_summary": item.get("semantic_summary", ""),
-                    "page_number": item.get("page_number", 1),
-                    "chunk_index": item["chunk_id"].split("_")[-1] if "_" in item["chunk_id"] else "0"
+                    "chunk_id": str(item.get("chunk_id", "")),
+                    "meeting_date": str(item.get("meeting_date") or "Unknown"),
+                    "source_document": str(item.get("source_document") or "Unknown"),
+                    "section_name": str(item.get("section_name") or "Overview"),
+                    "semantic_summary": str(item.get("semantic_summary") or ""),
+                    "page_number": int(item.get("page_number") or 1),
+                    "hawkish_score": float(item.get("hawkish_score") or 0.0),
+                    "topics": str(item.get("topics") or "Unknown"),
+                    "chunk_index": int(item["chunk_id"].split("_")[-1] if "_" in item.get("chunk_id", "") else 0)
                 }
                 metadatas.append(metadata)
                 

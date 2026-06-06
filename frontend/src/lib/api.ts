@@ -48,7 +48,7 @@ export interface ChatMessage {
   };
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+const API_BASE_URL = '/api';
 
 export async function queryDocuments(query: string, topK: number = 5, mode: string = "auto", sessionId?: string): Promise<QueryResponse> {
   const response = await fetch(`${API_BASE_URL}/query`, {
@@ -80,6 +80,11 @@ export async function queryDocumentsStream(
     onError?: (error: any) => void;
   } = {}
 ) {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, 45000); // 45 seconds timeout
+
   try {
     const response = await fetch(`${API_BASE_URL}/query`, {
       method: 'POST',
@@ -87,10 +92,15 @@ export async function queryDocumentsStream(
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ query, top_k: topK, mode, session_id: sessionId }),
+      signal: controller.signal,
     });
 
+    // NOTE: Do NOT clearTimeout here — the timeout must cover the entire
+    // SSE stream, not just the initial connection. Cleanup is in finally{}.
+
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`);
     }
 
     const reader = response.body?.getReader();
@@ -136,8 +146,18 @@ export async function queryDocumentsStream(
         }
       }
     }
-  } catch (error) {
-    if (callbacks.onError) callbacks.onError(error);
+  } catch (error: any) {
+    if (error.name === 'AbortError') {
+      if (callbacks.onError) {
+        callbacks.onError(new Error("Request timed out after 30 seconds. Please try again."));
+      }
+    } else {
+      if (callbacks.onError) {
+        callbacks.onError(error);
+      }
+    }
+  } finally {
+    clearTimeout(timeoutId);
   }
 }
 
@@ -224,4 +244,20 @@ export async function deleteSession(sessionId: string): Promise<void> {
   if (!response.ok) {
     throw new Error('Failed to delete session');
   }
+}
+
+export interface SentimentTimelineItem {
+  date: string;
+  source: string;
+  hawk_score: number;
+  dove_score: number;
+  net_stance: number;
+}
+
+export async function getSentimentTimeline(): Promise<SentimentTimelineItem[]> {
+  const response = await fetch(`${API_BASE_URL}/sentiment-timeline`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch sentiment timeline');
+  }
+  return response.json();
 }

@@ -1,7 +1,6 @@
 import json
 import os
 import logging
-from sentence_transformers import SentenceTransformer
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -14,14 +13,16 @@ def load_chunks(input_path):
     with open(input_path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
-def generate_embeddings(chunks, model_name=MODEL_NAME, batch_size=32, source_document="fomc_text_cleaned.txt", meeting_date="Unknown"):
+def generate_embeddings(chunks, model_name=MODEL_NAME, batch_size=32, source_document="fomc_text_cleaned.txt", meeting_date="Unknown", hawkish_score=0.0, topics="Unknown"):
     """
     Generate embeddings for a list of text chunks.
     Returns a list of dictionaries with chunk metadata and embeddings.
     """
     logger.info(f"Loading model: {model_name}")
     try:
-        model = SentenceTransformer(model_name)
+        # Reuse the shared singleton model from semantic_search
+        from backend.semantic_search import get_embedding_model
+        model = get_embedding_model(model_name)
     except Exception as e:
         logger.error(f"Failed to load model {model_name}: {e}")
         raise
@@ -66,6 +67,8 @@ def generate_embeddings(chunks, model_name=MODEL_NAME, batch_size=32, source_doc
                 "section_name": section_name,
                 "semantic_summary": semantic_summary,
                 "page_number": page_number,
+                "hawkish_score": hawkish_score,
+                "topics": topics,
                 "chunk_text": chunk_text,
                 "embedding": batch_embeddings[j].tolist()
             }

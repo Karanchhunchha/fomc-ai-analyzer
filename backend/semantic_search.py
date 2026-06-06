@@ -2,12 +2,35 @@
 # were structured and implemented with AI coding guidance.
 
 import logging
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 from sentence_transformers import SentenceTransformer, CrossEncoder
 from backend.vector_store import VectorStore
+from backend.bm25_search import BM25, combine_scores
 
 logger = logging.getLogger(__name__)
 
 from backend.config import config
+
+# ── Module-level singletons (loaded once, shared across all requests) ──
+_embedding_model = None
+_cross_encoder_model = None
+_rerank_executor = ThreadPoolExecutor(max_workers=2)
+
+def get_embedding_model(model_name: str = config.EMBEDDING_MODEL_NAME) -> SentenceTransformer:
+    global _embedding_model
+    if _embedding_model is None:
+        logger.info(f"Loading embedding model singleton: {model_name}")
+        _embedding_model = SentenceTransformer(model_name)
+    return _embedding_model
+
+def get_cross_encoder(model_name: str = 'cross-encoder/ms-marco-MiniLM-L-6-v2') -> CrossEncoder:
+    global _cross_encoder_model
+    if _cross_encoder_model is None:
+        logger.info(f"Loading cross-encoder model singleton: {model_name}")
+        _cross_encoder_model = CrossEncoder(model_name)
+    return _cross_encoder_model
+
 
 class SemanticSearcher:
     def __init__(self, model_name=config.EMBEDDING_MODEL_NAME):
@@ -15,10 +38,34 @@ class SemanticSearcher:
         self.vector_store = VectorStore()
         self.collection = self.vector_store.get_collection()
         
-        logger.info(f"Loading search model: {self.model_name}")
-        self.model = SentenceTransformer(self.model_name)
-        logger.info("Loading cross-encoder model: cross-encoder/ms-marco-MiniLM-L-6-v2")
-        self.cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
+        # Reuse module-level singletons
+        self.model = get_embedding_model(self.model_name)
+        self.cross_encoder = get_cross_encoder()
+        
+        # Initialize BM25 for hybrid search (lazy loading)
+        self._bm25 = None
+        self._bm25_corpus = None
+        
+    def _get_bm25_index(self):
+        """Lazy load and initialize BM25 index with all documents in the collection."""
+        if self._bm25 is None:
+            logger.info("Building BM25 index for hybrid search...")
+            try:
+                # Get all documents from the collection
+                all_data = self.collection.get(include=["documents"])
+                if all_data and all_data.get("documents"):
+                    self._bm25_corpus = all_data["documents"]
+                    self._bm25 = BM25(self._bm25_corpus)
+                    logger.info(f"BM25 index built with {len(self._bm25_corpus)} documents")
+                else:
+                    logger.warning("No documents found in collection for BM25 indexing")
+                    self._bm25_corpus = []
+                    self._bm25 = None
+            except Exception as e:
+                logger.error(f"Failed to build BM25 index: {e}")
+                self._bm25_corpus = []
+                self._bm25 = None
+        return self._bm25
         
     def search(self, query, top_k=config.TOP_K_RETRIEVAL):
         """
@@ -107,37 +154,27 @@ class SemanticSearcher:
             
         import math
         # 3. Score and Rerank candidates using CrossEncoder
-        reranked_candidates = []
-        
         raw_texts = results['documents'][0]
         raw_metadatas = results['metadatas'][0]
         
-        cross_inp = [[query, text] for text in raw_texts]
-        cross_scores = self.cross_encoder.predict(cross_inp)
+        # 4. Get BM25 scores for hybrid search
+        bm25_index = self._get_bm25_index()
+        if bm25_index and self._bm25_corpus:
+            # Map raw_texts back to corpus indices for BM25 scoring
+            bm25_scores = []
+            for text in raw_texts:
+                # Find the index in the corpus
+                try:
+                    corpus_idx = self._bm25_corpus.index(text)
+                    bm25_score = bm25_index.score(query, corpus_idx)
+                    bm25_scores.append(bm25_score)
+                except ValueError:
+                    bm25_scores.append(0.0)
+            logger.info(f"BM25 scores computed for {len(bm25_scores)} documents")
+        else:
+            bm25_scores = [0.0] * len(raw_texts)
         
-        def sigmoid(x):
-            return 1 / (1 + math.exp(-x))
-            
-        for idx in range(len(raw_texts)):
-            doc_text = raw_texts[idx]
-            meta = raw_metadatas[idx] if raw_metadatas[idx] else {}
-            
-            # CrossEncoder outputs logits, so we convert them using sigmoid for a 0-1 confidence score roughly
-            hybrid_score = sigmoid(cross_scores[idx])
-            
-            # Add matched keywords and scores details to metadata
-            updated_meta = {
-                **meta,
-                "chunk_text": doc_text,
-                "vector_score": f"{hybrid_score:.4f}"
-            }
-            
-            reranked_candidates.append({
-                "text": doc_text,
-                "citation": meta.get('source_document', 'Unknown'),
-                "similarity_score": hybrid_score,
-                "metadata": updated_meta
-            })
+        reranked_candidates = self._rerank(query, raw_texts, raw_metadatas, bm25_scores)
             
         # Sort by hybrid similarity score descending
         reranked_candidates.sort(key=lambda x: x["similarity_score"], reverse=True)
@@ -155,6 +192,64 @@ class SemanticSearcher:
         }
         
         return formatted_results
+
+    def _rerank(self, query: str, raw_texts: list, raw_metadatas: list, bm25_scores: list = None) -> list:
+        """CrossEncoder reranking with BM25 hybrid scoring — offloads the blocking predict() to a thread pool.
+        
+        This prevents the CPU-intensive CrossEncoder inference from blocking
+        the FastAPI async event loop, even when called from synchronous code paths.
+        """
+        import math
+        
+        cross_inp = [[query, text] for text in raw_texts]
+        
+        # Offload the heavy predict() call to the thread pool so the event loop
+        # stays responsive for other requests during reranking.
+        future = _rerank_executor.submit(self.cross_encoder.predict, cross_inp)
+        cross_scores = future.result()  # blocks this thread only, not the event loop
+        
+        def sigmoid(x):
+            return 1 / (1 + math.exp(-x))
+        
+        reranked = []
+        for idx in range(len(raw_texts)):
+            doc_text = raw_texts[idx]
+            meta = raw_metadatas[idx] if raw_metadatas[idx] else {}
+            cross_score = sigmoid(cross_scores[idx])
+            
+            # Combine CrossEncoder score with BM25 score if available
+            if bm25_scores and idx < len(bm25_scores):
+                # Normalize BM25 score and combine with cross-encoder score
+                bm25_score = bm25_scores[idx]
+                # Simple linear combination: 70% cross-encoder, 30% BM25
+                hybrid_score = 0.7 * cross_score + 0.3 * (bm25_score / (max(bm25_scores) if max(bm25_scores) > 0 else 1))
+            else:
+                hybrid_score = cross_score
+            
+            updated_meta = {
+                **meta,
+                "chunk_text": doc_text,
+                "vector_score": f"{cross_score:.4f}",
+                "bm25_score": f"{bm25_scores[idx] if bm25_scores and idx < len(bm25_scores) else 0:.4f}" if bm25_scores else "N/A"
+            }
+            reranked.append({
+                "text": doc_text,
+                "citation": meta.get('source_document', 'Unknown'),
+                "similarity_score": hybrid_score,
+                "metadata": updated_meta
+            })
+        return reranked
+
+    async def rerank_async(self, query: str, raw_texts: list, raw_metadatas: list) -> list:
+        """Run CrossEncoder reranking in a thread pool to avoid blocking the async event loop."""
+        loop = asyncio.get_event_loop()
+        return await loop.run_in_executor(
+            _rerank_executor,
+            self._rerank,
+            query,
+            raw_texts,
+            raw_metadatas
+        )
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
