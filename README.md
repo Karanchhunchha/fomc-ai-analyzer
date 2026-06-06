@@ -1,265 +1,249 @@
 # FOMC AI Analyzer 🏛️
 
-**Federal Open Market Committee Minutes Analysis with Large Language Models**
+<div align="center">
 
-An AI-native financial intelligence platform that uses large language models to extract insights from central bank policy documents. Built as a full-stack RAG (Retrieval-Augmented Generation) system with real-time streaming, semantic search, and interactive policy stance visualization.
+**AI-native financial intelligence platform for Federal Reserve policy analysis**
 
-> **Impact:** Harness AI to revolutionize financial text analysis and unlock deeper insights from real-world monetary policy documents.
+[![MathWorks Challenge](https://img.shields.io/badge/MathWorks-Challenge%20%23258-E2231A?style=flat-square&logo=mathworks)](https://github.com/mathworks/MATLAB-Simulink-Challenge-Project-Hub/tree/main/projects/Federal%20Open%20Market%20Committee%20Minutes%20Analysis%20with%20Large%20Language%20Models)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=nextdotjs)](https://nextjs.org)
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python)](https://python.org)
 
-> **Expertise gained:** Artificial Intelligence, Computational Finance, Natural Language Processing, Text Analytics, Neural Networks
+[**Live Demo**](https://fomc-ai-analyzer.vercel.app) · [**API Health**](https://fomc-ai-analyzer-backend.onrender.com/health) · [**Challenge Page**](https://github.com/mathworks/MATLAB-Simulink-Challenge-Project-Hub/tree/main/projects/Federal%20Open%20Market%20Committee%20Minutes%20Analysis%20with%20Large%20Language%20Models)
 
----
-
-## 🎯 Motivation
-
-Understanding central bank communication is a competitive edge in today's data-driven financial industry. The Federal Open Market Committee (FOMC) plays a pivotal role in shaping U.S. monetary policy, and its meeting minutes offer valuable insights into interest rate decisions, inflation expectations, and the broader economic outlook. These documents are essential reading for economists, traders, portfolio managers, and policy analysts.
-
-This project automates the analysis pipeline — from downloading raw FOMC documents to chunking, embedding, indexing, and querying them with grounded LLM responses complete with source citations and confidence scoring.
+</div>
 
 ---
 
-## 🏗️ Architecture
+## What This Is
 
-```mermaid
-graph TB
-    subgraph Frontend["Next.js Frontend (Port 3000)"]
-        UI["Dashboard UI"]
-        Proxy["API Proxy Route"]
-    end
+A production-deployed RAG (Retrieval-Augmented Generation) terminal that ingests Federal Open Market Committee meeting minutes and answers natural language questions about monetary policy — with source citations, confidence scoring, and real-time policy stance visualization.
 
-    subgraph Backend["FastAPI Backend (Port 8000)"]
-        API["REST API + SSE Streaming"]
-        RAG["RAG Pipeline"]
-        Embed["Sentence Transformers"]
-        Gemini["Gemini 2.5 Flash"]
-        OR["OpenRouter Llama (Fallback)"]
-    end
+Built for the **MathWorks Excellence in AI Challenge #258** by [Karan Chhunchha](mailto:karanchhunchha@gmail.com).
 
-    subgraph Storage["Storage Layer"]
-        Chroma["ChromaDB Vector Store"]
-        PG["PostgreSQL Database"]
-    end
-
-    subgraph Data["Data Layer"]
-        FOMC["FOMC Minutes (PDF/TXT)"]
-        Ingest["Ingestion Worker"]
-    end
-
-    UI --> Proxy
-    Proxy --> API
-    API --> RAG
-    RAG --> Embed
-    RAG --> Gemini
-    RAG --> OR
-    Embed --> Chroma
-    API --> PG
-    FOMC --> Ingest
-    Ingest --> Embed
-    Ingest --> PG
+```
+Upload FOMC Minutes PDF
+        ↓
+Page-aware chunking + embedding
+        ↓
+Hybrid vector + BM25 search
+        ↓
+CrossEncoder reranking
+        ↓
+Gemini 2.5 Flash synthesis (streamed)
+        ↓
+Grounded answer with [Excerpt N] citations + CONFIDENCE: HIGH/MEDIUM/LOW
 ```
 
 ---
 
-## ✨ Features
+## Architecture
 
-### Core RAG Pipeline
-- **Semantic Search** — Query FOMC documents using natural language with cosine similarity ranking
-- **Hybrid Search** — Combines vector search with BM25 keyword matching for better retrieval accuracy
-- **Query Rewriting** — Maps conversational queries to formal FOMC terminology for improved relevance
-- **Grounded Answers** — LLM responses are strictly constrained to retrieved context with `[Excerpt N]` citations
-- **SSE Streaming** — Real-time token-by-token response streaming via Server-Sent Events
-- **Multi-Model Fallback** — Gemini 2.5 Flash primary, OpenRouter Llama 3.3 70B fallback with automatic retry + exponential backoff
-- **Confidence Scoring** — HIGH/MEDIUM/LOW confidence labels based on similarity threshold analysis
-- **Response Caching** — SHA256-hashed query cache to avoid redundant LLM calls
+```mermaid
+flowchart LR
+  subgraph "Frontend — Vercel"
+    UI["Next.js Workspace"]
+    UP["Upload PDF/TXT"]
+    QI["Query Input"]
+    CR["Citation Cards"]
+    ST["Hawk-Dove Timeline"]
+  end
 
-### Document Processing
-- **PDF & TXT Upload** — Drag-and-drop document ingestion with MIME validation and size limits (15MB)
-- **Page-Aware Chunking** — Intelligent text splitting with section detection and semantic summaries
-- **Meeting Date Extraction** — Automatic date parsing from document content
-- **Hawkish/Dovish Scoring** — Financial sentiment analysis using keyword-based and LLM-based scoring (-1.0 to +1.0 scale)
-- **Topic Classification** — Automatic topic tagging (Inflation, Employment, Interest Rates, etc.)
+  subgraph "Auth & Rate Limiting"
+    AK["X-API-Key Check"]
+    RL["slowapi 10/min"]
+  end
 
-### Auto-Ingestion Pipeline
-- **Federal Reserve RSS Feed** — Automated download of new FOMC minutes, statements, and press releases
-- **Deduplication** — MD5 checksum-based duplicate detection to prevent re-processing
-- **Background Scheduling** — APScheduler-based periodic ingestion worker
+  subgraph "FastAPI Backend — Render"
+    EP1["/upload"]
+    EP2["/query SSE Stream"]
+    EP3["/sentiment-timeline"]
+    EP4["/health"]
+  end
 
-### Interactive Dashboard (Next.js)
-- **Workspace** — Main query interface with conversation history and evidence panel
-- **Documents** — Document index manager with upload, delete, and metadata inspection
-- **Insights** — Macroeconomic analysis pivots (Inflation, Labor, Interest Rates, Global Trade)
-- **Compare** — Side-by-side policy comparison across FOMC meetings
-- **Sessions** — Chat history management with persistent conversation threads
-- **Sentiment Timeline** — Chronological Hawkish/Dovish stance drift visualization
+  subgraph "RAG Pipeline"
+    CHK["PyMuPDF Chunker"]
+    EMB["SentenceTransformer"]
+    VEC["ChromaDB + BM25"]
+    RR["CrossEncoder Reranker"]
+    CAC["SQLite Cache"]
+    GEM["Gemini 2.5 Flash"]
+    OR["OpenRouter Fallback"]
+  end
 
-### Multi-Agent Intelligence System
-- **Agent Orchestration** — Centralized routing system for specialized financial analysis agents
-- **FOMC Agent** — Specialized document analysis with policy stance tracking and cross-meeting comparison
-- **Speech Agent** — Federal Reserve speech and testimony analysis with forward guidance extraction
-- **News Agent** — Federal Reserve news, press releases, and events analysis
-- **Market Agent** — Financial market correlation analysis and policy impact assessment
+  subgraph "Render Disk /var/data"
+    CD[("ChromaDB")]
+    SQ[("SQLite")]
+  end
 
-### Security & Production Features
-- **API Key Authentication** — Header-based `X-API-Key` verification
-- **Rate Limiting** — SlowAPI-powered request throttling (100/min general, 10/min queries, 5/min uploads)
-- **Input Sanitization** — HTML stripping, null byte removal, filename path traversal prevention
-- **CORS Configuration** — Configurable allowed origins for cross-origin requests
-- **Request Logging** — Structured loguru logging with daily rotation and unique request IDs
+  UP --> AK --> EP1 --> CHK --> EMB --> CD
+  QI --> AK --> RL --> EP2 --> VEC --> RR --> CAC
+  CAC -- "hit <5ms" --> UI
+  CAC -- "miss" --> GEM
+  GEM -- "429" --> OR
+  GEM --> UI
+  EP3 --> ST
+  EP4 --> UI
+```
 
 ---
 
-## 🛠️ Tech Stack
+## Features
+
+### RAG Pipeline
+| Feature | Implementation |
+|---|---|
+| Semantic search | `all-MiniLM-L6-v2` embeddings → ChromaDB cosine similarity |
+| Keyword search | BM25 (`rank_bm25`) for term-frequency matching |
+| Hybrid retrieval | Vector + BM25 score fusion for better coverage |
+| Reranking | `cross-encoder/ms-marco-MiniLM-L-6-v2` — non-blocking via `ThreadPoolExecutor` |
+| Query rewriting | Maps conversational queries to formal FOMC terminology |
+| Response caching | SHA256 query hash → SQLite cache (<5ms repeat queries) |
+| Streaming | Server-Sent Events (SSE) — token-by-token via `StreamingResponse` |
+| Fallback | Gemini 429 → exponential backoff → OpenRouter Llama 3.3 70B |
+| Grounding | System prompt enforces context-only answers + `⚠️ LIMITED EVIDENCE` prefix |
+| Confidence | `HIGH` (3+ strong excerpts) / `MEDIUM` (1-2) / `LOW` (sparse) |
+
+### Document Processing
+- **PDF + TXT** upload with MIME detection (`python-magic`) and 15MB size limit
+- **Page-aware chunking** — preserves page numbers in chunk metadata
+- **Meeting date extraction** — auto-parsed from document content
+- **Hawkish/Dovish scoring** — keyword frequency model (-1.0 to +1.0 scale)
+- **Topic classification** — auto-tags chunks (Inflation, Employment, Interest Rates, etc.)
+- **Auto-ingestion** — APScheduler polls Federal Reserve RSS for new minutes
+
+### Multi-Agent Intelligence
+Four specialized agents routed by an orchestrator:
+- **FOMC Agent** — policy stance tracking, cross-meeting comparison
+- **Speech Agent** — Fed speech and testimony analysis, forward guidance extraction
+- **News Agent** — press releases and Federal Reserve news analysis
+- **Market Agent** — financial market correlation and policy impact assessment
+
+### Production Engineering
+| Area | What's in place |
+|---|---|
+| Auth | `X-API-Key` header verification via FastAPI dependency |
+| Rate limiting | `slowapi` — 10/min queries, 5/min uploads, 100/min general |
+| CORS | Env var whitelist — no `allow_origins=["*"]` |
+| Input validation | HTML strip, null byte removal, 2000 char limit, MIME check |
+| Persistence | ChromaDB + SQLite on Render Disk `/var/data` — survives restarts |
+| Timeouts | 25s Gemini timeout via `ThreadPoolExecutor.result(timeout=25)` + 30s frontend `AbortController` |
+| Logging | `loguru` structured logs with `X-Request-ID` per request, daily rotation |
+| Health check | `GET /health` — indexed doc count, cache entries, uptime, model |
+
+---
+
+## Evaluation Results
+
+Tested on 10 FOMC-specific Q&A pairs using LLM-as-a-judge evaluation (`evaluation/ragas_eval.py`):
+
+| Metric | Score |
+|---|---|
+| Retrieval Precision @5 | **0.695** |
+| Answer Faithfulness | **0.860** |
+| Answer Relevancy | **0.860** |
+| Context Recall | **0.860** |
+
+> Run your own evaluation: `python evaluation/ragas_eval.py`
+
+---
+
+## MATLAB Analytics Layer
+
+Eight MATLAB scripts demonstrating the MathWorks challenge toolboxes:
+
+| Script | Toolbox | What it does |
+|---|---|---|
+| `ingest_documents.m` | Text Analytics Toolbox™ | Tokenization, stop word removal, case folding |
+| `fomc_sentiment_analysis.m` | Statistics & ML Toolbox™ | Hawk-Dove Index calculation, policy gauge visualization |
+| `fomc_rag_pipeline.m` | Deep Learning Toolbox™ | TF-IDF cosine similarity search, LLM REST integration |
+| `fomc_retrieval.m` | Text Analytics Toolbox™ | Semantic retrieval demonstration |
+| `fomc_validation.m` | Statistics Toolbox™ | Pipeline validation with pass/fail metric charts |
+| `fomc_database.m` | Database Toolbox™ | Document storage and retrieval simulation |
+| `fomc_downloader.m` | — | Federal Reserve document download automation |
+| `matlab/README.md` | — | Setup guide and toolbox requirements |
+
+> **Architecture note:** MATLAB operates as a standalone analytics validation and visualization layer demonstrating Challenge #258 toolbox requirements. The production API is Python-native for cloud deployment portability. No MATLAB runtime is required to run the live system.
+
+---
+
+## Tech Stack
 
 | Layer | Technology |
 |---|---|
-| **Frontend** | Next.js 16, React 19, TypeScript, Tailwind CSS v4 |
-| **Backend** | FastAPI, Python 3.11+, Uvicorn |
-| **LLM** | Google Gemini 2.5 Flash, OpenRouter (Llama 3.3 70B) |
-| **Embeddings** | Sentence Transformers (`all-MiniLM-L6-v2`) |
-| **Vector DB** | ChromaDB |
-| **Database** | PostgreSQL 18 (SQLite fallback) |
-| **PDF Processing** | PyMuPDF (fitz) |
-| **Logging** | Loguru with structured JSON output |
-| **Security** | SlowAPI rate limiting, python-magic MIME detection |
+| Frontend | Next.js 15, React 19, TypeScript, Tailwind CSS |
+| Backend | FastAPI, Python 3.11+, Uvicorn |
+| LLM | Gemini 2.5 Flash (primary), OpenRouter Llama 3.3 70B (fallback) |
+| Embeddings | `sentence-transformers/all-MiniLM-L6-v2` (local) |
+| Reranker | `cross-encoder/ms-marco-MiniLM-L-6-v2` (local) |
+| Vector DB | ChromaDB (persistent) |
+| Database | SQLite (default) / PostgreSQL (optional) |
+| PDF | PyMuPDF (`fitz`) |
+| Security | SlowAPI, python-magic, loguru |
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
 ```
 fomc-ai-analyzer/
 ├── backend/
-│   ├── api.py                  # FastAPI app with all REST endpoints
-│   ├── rag_pipeline.py         # Core RAG pipeline with SSE streaming
-│   ├── semantic_search.py      # ChromaDB semantic search with hybrid BM25
-│   ├── embeddings.py           # Sentence Transformer embedding generation
+│   ├── api.py                  # FastAPI app — all endpoints
+│   ├── rag_pipeline.py         # Core RAG with SSE streaming
+│   ├── semantic_search.py      # ChromaDB + BM25 hybrid search
+│   ├── embeddings.py           # Sentence Transformer (singleton)
 │   ├── vector_store.py         # ChromaDB collection management
-│   ├── database.py             # PostgreSQL/SQLite dual-engine database layer
-│   ├── document_processor.py   # PDF/TXT page-aware chunking
-│   ├── financial_analyzer.py   # Hawkish/Dovish sentiment scoring
-│   ├── query_rewriter.py       # Query rewriting for formal terminology
-│   ├── bm25_search.py          # BM25 keyword search for hybrid retrieval
-│   ├── agent_orchestrator.py   # Multi-agent orchestration framework
+│   ├── database.py             # SQLite / PostgreSQL dual engine
+│   ├── document_processor.py   # Page-aware PDF/TXT chunking
+│   ├── financial_analyzer.py   # Hawk/Dove sentiment scoring
+│   ├── query_rewriter.py       # Formal terminology mapping
+│   ├── bm25_search.py          # BM25 keyword search
+│   ├── agent_orchestrator.py   # Multi-agent routing
 │   ├── fomc_agent.py           # FOMC document analysis agent
 │   ├── speech_agent.py         # Fed speech analysis agent
-│   ├── news_agent.py           # Federal Reserve news analysis agent
-│   ├── market_agent.py         # Market correlation analysis agent
-│   ├── init_agents.py          # Agent initialization script
-│   ├── ingestion_worker.py     # Auto-ingestion from Federal Reserve RSS
-│   ├── config.py               # Centralized configuration + Loguru setup
-│   ├── auth.py                 # API key authentication
-│   └── dependencies.py         # FastAPI dependency injection
+│   ├── news_agent.py           # Federal Reserve news agent
+│   ├── market_agent.py         # Market correlation agent
+│   ├── ingestion_worker.py     # Auto-ingestion from Fed RSS
+│   ├── config.py               # Config + loguru setup
+│   ├── auth.py                 # X-API-Key dependency
+│   └── dependencies.py         # FastAPI lru_cache singletons
 ├── frontend/
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── workspace/      # Main RAG query interface
-│   │   │   ├── documents/      # Document index manager
-│   │   │   ├── insights/       # Macroeconomic analysis pivots
-│   │   │   ├── compare/        # Cross-meeting policy comparison
-│   │   │   ├── sessions/       # Chat history manager
-│   │   │   └── api/            # Backend proxy routes
-│   │   ├── components/         # Reusable UI components
-│   │   └── lib/                # API client + utilities
-│   └── package.json
-├── data/
-│   ├── raw/                    # Downloaded FOMC documents
-│   └── chroma_db/              # ChromaDB persistent storage
-├── evaluation/                 # RAG evaluation framework with LLM-as-a-judge
-├── requirements.txt            # Python dependencies
-├── render.yaml                 # Render.com deployment config
-└── .env.example                # Environment variable template
+│   ├── src/app/
+│   │   ├── workspace/          # Main query interface
+│   │   ├── documents/          # Document manager
+│   │   ├── insights/           # Macroeconomic analysis pivots
+│   │   ├── compare/            # Cross-meeting comparison
+│   │   ├── sessions/           # Chat history
+│   │   └── api/                # Secure Next.js backend proxy
+│   └── src/components/         # Topbar, Sidebar, ResponseCard, SentimentTimeline
+├── matlab/                     # 8 MATLAB analytics scripts
+├── data/raw/sample/            # Sample FOMC document for testing
+├── evaluation/
+│   └── ragas_eval.py           # LLM-as-a-judge evaluation runner
+├── render.yaml                 # Render deployment with Disk config
+└── .env.example                # All required environment variables
 ```
 
 ---
 
-## 🚀 Getting Started
+## API Reference
 
-### Prerequisites
-- **Python 3.11+** with pip
-- **Node.js 18+** with npm
-- **PostgreSQL 14+** (or use SQLite fallback)
+| Method | Endpoint | Auth | Description |
+|---|---|---|---|
+| `GET` | `/health` | ❌ | System status — doc count, cache, uptime, model |
+| `POST` | `/upload` | ✅ | Upload PDF/TXT — MIME validation, 15MB limit |
+| `POST` | `/query` | ✅ | SSE streaming query with citations |
+| `GET` | `/documents` | ❌ | List all indexed documents |
+| `DELETE` | `/documents/{id}` | ✅ | Delete document + vectors |
+| `GET` | `/sentiment-timeline` | ❌ | Hawk/Dove scores over time |
+| `POST` | `/sessions` | ✅ | Create chat session |
+| `GET` | `/sessions/{id}/history` | ❌ | Get session history |
+| `DELETE` | `/sessions/{id}` | ✅ | Delete session |
 
-### 1. Clone & Setup Environment
-
+**Example query:**
 ```bash
-git clone https://github.com/your-username/fomc-ai-analyzer.git
-cd fomc-ai-analyzer
-
-# Create Python virtual environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install Python dependencies
-pip install -r requirements.txt
-```
-
-### 2. Configure Environment Variables
-
-Copy the example and fill in your API keys:
-
-```bash
-cp .env.example .env
-```
-
-Edit `.env`:
-```env
-GEMINI_API_KEY=your_gemini_api_key_here
-OPENROUTER_API_KEY=your_openrouter_api_key_here  # Optional fallback
-DATABASE_TYPE=postgres                             # Or 'sqlite'
-DATABASE_URL=postgresql://postgres:password@localhost:5432/postgres
-```
-
-### 3. Start PostgreSQL
-
-```bash
-# Windows
-& "C:\Program Files\PostgreSQL\18\bin\pg_ctl.exe" -D "C:\Program Files\PostgreSQL\18\data" start
-
-# Linux/macOS
-sudo systemctl start postgresql
-```
-
-Tables are auto-created on first backend startup.
-
-### 4. Start Backend Server
-
-```bash
-python -m uvicorn backend.api:app --host 0.0.0.0 --port 8000 --reload
-```
-
-The API will be available at `http://localhost:8000`. Check health: `GET /health`
-
-### 5. Start Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Open `http://localhost:3000` in your browser.
-
----
-
-## 📡 API Endpoints
-
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| `GET` | `/health` | System health check with uptime and stats | ❌ |
-| `POST` | `/upload` | Upload PDF/TXT document for ingestion | ✅ |
-| `POST` | `/query` | Query documents with SSE streaming response | ✅ |
-| `GET` | `/documents` | List all indexed documents with metadata | ❌ |
-| `DELETE` | `/documents/{id}` | Delete document and its vectors | ✅ |
-| `GET` | `/sentiment-timeline` | Hawkish/Dovish scores over time | ❌ |
-| `GET` | `/sessions` | List all chat sessions | ❌ |
-| `POST` | `/sessions` | Create a new chat session | ✅ |
-| `GET` | `/sessions/{id}/history` | Get chat history for a session | ❌ |
-| `DELETE` | `/sessions/{id}` | Delete a chat session | ✅ |
-| `POST` | `/summarize` | Summarize a specific FOMC document | ❌ |
-
-### Example Query (SSE Streaming)
-```bash
-curl -X POST http://localhost:8000/query \
+curl -X POST https://fomc-ai-analyzer-backend.onrender.com/query \
   -H "Content-Type: application/json" \
   -H "X-API-Key: your_key" \
   -d '{"query": "What was the inflation outlook at the January 2026 meeting?", "top_k": 5}'
@@ -267,54 +251,132 @@ curl -X POST http://localhost:8000/query \
 
 ---
 
-## 🔬 RAG Pipeline Flow
+## Getting Started (Local)
 
-1. **Query Classification** → Automatically detects query intent (Research, Summary, Compare, Study, Resume)
-2. **Query Rewriting** → Maps conversational queries to formal FOMC terminology for improved relevance
-3. **Hybrid Retrieval** → Combines vector search with BM25 keyword matching for better accuracy
-4. **Cross-Encoder Reranking** → Re-ranks results using MS-MARCO Cross-Encoder for precision
-5. **Confidence Check** → Validates similarity scores against configurable threshold (default: 0.20)
-6. **Cache Lookup** → Checks SHA256-hashed query cache before LLM call
-7. **Prompt Construction** → Builds mode-specific grounded prompt with metadata-enriched context
-8. **LLM Generation** → Streams response via Gemini with OpenRouter fallback + exponential backoff
-9. **Response Caching** → Stores successful responses for future cache hits
-10. **Session Logging** → Persists conversation to PostgreSQL for session continuity
+### 1 — Clone & backend setup
+
+```bash
+git clone https://github.com/Karanchhunchha/fomc-ai-analyzer.git
+cd fomc-ai-analyzer
+
+python -m venv venv
+venv\Scripts\activate          # Windows
+# source venv/bin/activate     # macOS/Linux
+
+pip install -r requirements.txt
+```
+
+### 2 — Configure environment
+
+```bash
+cp .env.example .env
+```
+
+Minimum required in `.env`:
+```env
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+Get a free Gemini key at: https://aistudio.google.com/apikey
+
+> SQLite is the default — no PostgreSQL setup needed.
+
+### 3 — Start backend
+
+```bash
+python -m uvicorn backend.api:app --host 0.0.0.0 --port 8000 --reload
+```
+
+Verify: `GET http://localhost:8000/health`
+
+### 4 — Start frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open: `http://localhost:3000`
+
+### 5 — Test it
+
+1. Upload `data/raw/sample/fomc_jan_2026_sample.txt`
+2. Ask: *"What was the rate decision in January 2026?"*
+3. You should see a grounded answer with `[Excerpt N]` citations and `CONFIDENCE: HIGH`
 
 ---
 
-## 📊 Query Modes
+## Deployment
 
-| Mode | Trigger Keywords | Behavior |
-|------|-----------------|----------|
-| **Research** | Default | Analytical financial research with policy stance analysis |
-| **Summary** | "summarize", "overview", "tldr" | Executive summary with key takeaways |
-| **Compare** | "compare", "contrast", "versus" | Side-by-side comparative analysis |
-| **Study** | "explain", "what is", "how to" | Educational breakdown with definitions |
-| **Resume** | "resume", "candidate", "skills" | Technical talent assessment (for uploaded CVs) |
+### Render (Backend)
+
+1. Connect GitHub repo → New Web Service
+2. Build: `pip install -r requirements.txt`
+3. Start: `uvicorn backend.api:app --host 0.0.0.0 --port $PORT --workers 2`
+4. Health check path: `/health`
+5. Add **Disk**: mount path `/var/data`, size 1GB
+6. Environment variables:
+
+```env
+GEMINI_API_KEY=your_key
+OPENROUTER_API_KEY=your_key
+INTERNAL_API_KEY=generate_with_python_uuid4
+ALLOWED_ORIGINS=https://your-vercel-url.vercel.app
+CHROMA_PERSIST_PATH=/var/data/chroma_db
+SQLITE_DB_PATH=/var/data/ck_workspace.db
+GEMINI_MODEL=gemini-2.5-flash
+MIN_SIMILARITY_THRESHOLD=0.20
+TOP_K_RETRIEVAL=5
+```
+
+> ⚠️ The Render Disk is required. Without it, ChromaDB resets on every restart.
+
+### Vercel (Frontend)
+
+1. Import repo → set root directory to `frontend/`
+2. Environment variables:
+
+```env
+API_BASE_URL=https://your-render-url.onrender.com
+INTERNAL_API_KEY=same_key_as_backend
+```
 
 ---
 
-## 🧪 Evaluation
+## Live Test Queries
 
-The project includes a comprehensive RAG evaluation framework in `evaluation/` for measuring:
-- **Retrieval Accuracy** — Are the right chunks being retrieved?
-- **Answer Grounding** — Is the LLM staying within the provided context?
-- **Citation Quality** — Are excerpt references accurate?
-- **LLM-as-a-Judge** — Uses Gemini to evaluate Faithfulness, Answer Relevancy, Context Precision, and Context Recall
+After deploying or running locally with the sample document:
 
+```
+Q: "What was the federal funds rate decision in January 2026?"
+A: Maintained at 3½–3¾% — unanimous vote [Excerpt 1]
+
+Q: "What were the main inflation concerns discussed?"
+A: Core PCE at 2.8%, shelter costs elevated, tariff effects on goods [Excerpt 2]
+
+Q: "What did participants say about the labor market?"
+A: Unemployment stable, low layoffs but low hiring [Excerpt 3]
+
+Q: "Who voted against maintaining rates?"
+A: Almost all supported holding — couple preferred to lower [Excerpt 4]
+```
 
 ---
 
-## 📝 License
+## MathWorks Challenge Submission
 
-This project is licensed under the MIT License. See [LICENSE](LICENSE) for details.
+- **Challenge**: [Federal Open Market Committee Minutes Analysis with LLMs — Project #258](https://github.com/mathworks/MATLAB-Simulink-Challenge-Project-Hub/tree/main/projects/Federal%20Open%20Market%20Committee%20Minutes%20Analysis%20with%20Large%20Language%20Models)
+- **Submitted by**: Karan Chhunchha ([karanchhunchha@gmail.com](mailto:karanchhunchha@gmail.com))
+- **AI usage**: Documented in [AI_ACKNOWLEDGMENT.md](AI_ACKNOWLEDGMENT.md)
+- **License**: [MIT](LICENSE)
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
-- **MathWorks** — MATLAB Simulink Challenge Project Hub inspiration
-- **Federal Reserve** — Public FOMC meeting minutes and statements
-- **Google DeepMind** — Gemini API for LLM generation
-- **Hugging Face** — Sentence Transformers for embedding models
-- **ChromaDB** — Open-source vector database
+- [MathWorks](https://www.mathworks.com) — Challenge inspiration and MATLAB toolboxes
+- [Federal Reserve](https://www.federalreserve.gov) — Public FOMC meeting minutes
+- [Google DeepMind](https://deepmind.google) — Gemini API
+- [Hugging Face](https://huggingface.co) — Sentence Transformers, CrossEncoder
+- [ChromaDB](https://www.trychroma.com) — Open-source vector database
