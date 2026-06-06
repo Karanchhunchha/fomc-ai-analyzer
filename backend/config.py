@@ -9,6 +9,13 @@ from loguru import logger as loguru_logger
 # Load environment variables
 load_dotenv()
 
+
+def _model_list(env_value: str, defaults: list[str]) -> list[str]:
+    if env_value:
+        return [m.strip() for m in env_value.split(",") if m.strip()]
+    return defaults
+
+
 class Config:
     # API Keys
     GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -23,6 +30,42 @@ class Config:
     # Select default model based on active provider
     GEMINI_MODEL_NAME = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
     OPENROUTER_MODEL_NAME = os.getenv("OPENROUTER_MODEL_NAME", "meta-llama/llama-3.3-70b-instruct:free")
+
+    GEMINI_FALLBACK_MODELS = _model_list(
+        os.getenv("GEMINI_FALLBACK_MODELS", ""),
+        ["gemini-2.0-flash", "gemini-1.5-flash"],
+    )
+    OPENROUTER_FALLBACK_MODELS = _model_list(
+        os.getenv("OPENROUTER_FALLBACK_MODELS", ""),
+        [
+            "meta-llama/llama-3.3-70b-instruct:free",
+            "google/gemma-2-9b-it:free",
+            "microsoft/phi-3-mini-128k-instruct:free",
+            "qwen/qwen-2.5-7b-instruct:free",
+        ],
+    )
+
+    @classmethod
+    def gemini_model_candidates(cls) -> list[str]:
+        models = [cls.GEMINI_MODEL_NAME, *cls.GEMINI_FALLBACK_MODELS]
+        seen: set[str] = set()
+        ordered: list[str] = []
+        for model in models:
+            if model not in seen:
+                seen.add(model)
+                ordered.append(model)
+        return ordered
+
+    @classmethod
+    def openrouter_model_candidates(cls) -> list[str]:
+        models = [cls.OPENROUTER_MODEL_NAME, *cls.OPENROUTER_FALLBACK_MODELS]
+        seen: set[str] = set()
+        ordered: list[str] = []
+        for model in models:
+            if model not in seen:
+                seen.add(model)
+                ordered.append(model)
+        return ordered
     
     # Text Chunking Settings
     CHUNK_SIZE = 1000

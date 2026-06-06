@@ -38,6 +38,14 @@ limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    import traceback
+    logger.error(f"Global exception: {exc}")
+    logger.error(traceback.format_exc())
+    from fastapi.responses import PlainTextResponse
+    return PlainTextResponse(str(exc) + "\n" + traceback.format_exc(), status_code=500)
+
 # Configure CORS so the Next.js frontend can make requests to this backend
 ALLOWED_ORIGINS = os.getenv("ALLOWED_ORIGINS", "http://localhost:3000").split(",")
 app.add_middleware(

@@ -149,12 +149,13 @@ export async function queryDocumentsStream(
   } catch (error: any) {
     if (error.name === 'AbortError') {
       if (callbacks.onError) {
-        callbacks.onError(new Error("Request timed out after 30 seconds. Please try again."));
+        callbacks.onError(new Error("Request timed out after 45 seconds. Please try again."));
       }
-    } else {
-      if (callbacks.onError) {
-        callbacks.onError(error);
-      }
+    } else if (callbacks.onError) {
+      const message = error?.message?.toLowerCase?.() === 'network error'
+        ? 'Lost connection to the analysis server. Check that the backend is running and try again.'
+        : (error?.message || 'An error occurred while streaming synthesis. Please try again.');
+      callbacks.onError(new Error(message));
     }
   } finally {
     clearTimeout(timeoutId);
@@ -182,7 +183,8 @@ export async function listDocuments(): Promise<Document[]> {
   const response = await fetch(`${API_BASE_URL}/documents`);
 
   if (!response.ok) {
-    throw new Error('Failed to retrieve document inventory');
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.detail || errorData.message || `Failed to retrieve document inventory (HTTP ${response.status})`);
   }
 
   const data = await response.json();

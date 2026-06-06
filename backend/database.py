@@ -11,6 +11,8 @@ from backend.config import config
 logger = logging.getLogger(__name__)
 
 DB_PATH = config.SQLITE_DB_PATH
+_db_initialized = False
+_using_sqlite_fallback = False
 
 # Try to import psycopg2 for PostgreSQL support
 try:
@@ -20,25 +22,60 @@ try:
 except ImportError:
     POSTGRES_AVAILABLE = False
 
-def get_connection():
-    if config.DATABASE_TYPE == "postgres":
+
+def _is_local_postgres_url(url: str) -> bool:
+    url_lower = (url or "").lower()
+    return "localhost" in url_lower or "127.0.0.1" in url_lower
+
+
+def _use_postgres() -> bool:
+    return config.DATABASE_TYPE == "postgres" and not _using_sqlite_fallback
+
+
+def _open_connection():
+    """Open a database connection without running schema initialization."""
+    global _using_sqlite_fallback
+
+    if _use_postgres():
         if not POSTGRES_AVAILABLE:
             raise ImportError("psycopg2 is not installed but DATABASE_TYPE is set to 'postgres'.")
-        conn = psycopg2.connect(config.DATABASE_URL)
-        return conn
-    else:
-        os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
-        conn = sqlite3.connect(DB_PATH)
-        # Enable foreign key support
-        conn.execute("PRAGMA foreign_keys = ON")
-        conn.row_factory = sqlite3.Row
-        return conn
+        try:
+            return psycopg2.connect(config.DATABASE_URL, connect_timeout=3)
+        except Exception as exc:
+            if _is_local_postgres_url(config.DATABASE_URL):
+                logger.warning(
+                    "PostgreSQL unavailable (%s). Falling back to SQLite at %s.",
+                    exc,
+                    DB_PATH,
+                )
+                _using_sqlite_fallback = True
+            else:
+                raise
+
+    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+    conn = sqlite3.connect(DB_PATH)
+    conn.execute("PRAGMA foreign_keys = ON")
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def get_connection():
+    _ensure_db_initialized()
+    return _open_connection()
+
+
+def _ensure_db_initialized():
+    global _db_initialized
+    if not _db_initialized:
+        init_db()
+        _db_initialized = True
+
 
 class DbCursor:
     """Unified wrapper around SQLite and psycopg2 cursors to translate SQL syntax differences."""
     def __init__(self, conn):
         self.conn = conn
-        self.is_postgres = (config.DATABASE_TYPE == "postgres")
+        self.is_postgres = _use_postgres()
         if self.is_postgres:
             self.cursor = conn.cursor(cursor_factory=RealDictCursor)
         else:
@@ -111,10 +148,11 @@ class DbCursor:
         return dict(row)
 
 def init_db():
-    logger.info(f"Initializing database using engine: {config.DATABASE_TYPE}")
-    conn = get_connection()
+    engine = "postgres" if _use_postgres() else "sqlite"
+    logger.info(f"Initializing database using engine: {engine}")
+    conn = _open_connection()
     # PostgreSQL requires autocommit for DDL (CREATE TABLE) to persist
-    if config.DATABASE_TYPE == "postgres":
+    if _use_postgres():
         conn.autocommit = True
     try:
         with DbCursor(conn) as db:
@@ -345,8 +383,4 @@ def update_document_sentiment(url: str, hawkish_score: float, topics: str) -> No
             )
     finally:
         conn.close()
-
-# Initialize DB on import
-init_db()
-# Trigger reload 2
 

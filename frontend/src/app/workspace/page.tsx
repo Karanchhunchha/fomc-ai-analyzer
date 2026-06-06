@@ -146,7 +146,8 @@ export default function WorkspacePage() {
                     cacheHit: meta.cache_hit || false,
                     chunksSearched: meta.sources?.length || 0,
                     meetingDate: (() => {
-                      const topChunkMeetingDate = meta.metadata?.[0]?.meeting_date;
+                      const topSource = meta.sources?.[0];
+                      const topChunkMeetingDate = topSource?.meeting_date;
                       if (topChunkMeetingDate && topChunkMeetingDate !== "Unknown") {
                         // Format full date to "Jan 2026" style
                         const dateMatch = topChunkMeetingDate.match(/(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d+,\s+(\d{4})/);
@@ -158,8 +159,8 @@ export default function WorkspacePage() {
                         return topChunkMeetingDate;
                       }
                       // Fallback to source document name
-                      const sourceDoc = meta.sources?.[0];
-                      if (sourceDoc) {
+                      const sourceDoc = topSource?.source_document;
+                      if (typeof sourceDoc === "string" && sourceDoc) {
                         return sourceDoc.replace(/_/g, ' ').replace(/\.(pdf|htm|txt)$/i, '');
                       }
                       return "Unknown";

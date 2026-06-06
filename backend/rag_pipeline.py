@@ -10,8 +10,44 @@ from datetime import datetime
 from google.generativeai import configure, GenerativeModel
 from backend.semantic_search import SemanticSearcher
 from backend.config import config
+from backend.database import get_cached_query, cache_query
 
 logger = logging.getLogger(__name__)
+
+
+def _is_rate_limit_error(err: Exception) -> bool:
+    err_str = str(err).lower()
+    return any(
+        token in err_str
+        for token in ("429", "resource_exhausted", "rate limit", "rate-limited", "quota")
+    )
+
+
+def _parse_retry_seconds(err: Exception, default: int = 5) -> int:
+    err_str = str(err)
+    for pattern in (
+        r"retry_after_seconds(?:_raw)?['\"]?\s*[:=]\s*(\d+(?:\.\d+)?)",
+        r"retry in (\d+(?:\.\d+)?)s",
+        r"'retry-after':\s*'(\d+)'",
+    ):
+        match = re.search(pattern, err_str, re.IGNORECASE)
+        if match:
+            return min(int(float(match.group(1))) + 1, 90)
+    return default
+
+
+def _user_friendly_synthesis_error(err: Exception) -> str:
+    if _is_rate_limit_error(err):
+        wait = _parse_retry_seconds(err, 30)
+        return (
+            f"All synthesis models are temporarily rate-limited. "
+            f"Please wait about {wait} seconds and try again. "
+            "If this persists, check your Gemini/OpenRouter API quotas or upgrade your plan."
+        )
+    if "timeout" in str(err).lower():
+        return "The model took too long to respond. Please try again with a shorter query."
+    return "Synthesis failed due to a provider error. Please try again in a moment."
+
 
 class RAGPipeline:
     def __init__(self):
@@ -202,7 +238,6 @@ ANSWER:"""
         doc_ids = sorted(unique_citations)
         
         # --- Cache Interception ---
-        from backend.database import get_cached_query, cache_query
         try:
             cached_res = get_cached_query(user_query, doc_ids)
             if cached_res:
@@ -246,78 +281,80 @@ ANSWER:"""
         # 4. Generate response using Gemini primarily, fallback to OpenRouter
         success = False
         answer = ""
-        last_error_details = "Unknown connection issue"
+        last_error: Exception | None = None
         max_retries = 3
-        retry_delay = 4 # seconds
         GEMINI_TIMEOUT_SECONDS = 25
-        
-        for attempt in range(1, max_retries + 1):
-            try:
-                logger.info(f"Calling Gemini API stream (attempt {attempt})...")
-                
-                # Wrap the blocking generate_content call in a thread with timeout
-                # to protect against both initial connection hangs AND slow streaming.
-                from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
-                
-                def _gemini_sync_call():
-                    """Collect Gemini streamed chunks in a background thread."""
-                    collected = []
-                    resp = self.model.generate_content(prompt, stream=True)
-                    for chunk in resp:
+        from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
+
+        def _gemini_sync_call(model: GenerativeModel):
+            """Collect Gemini streamed chunks in a background thread."""
+            collected = []
+            resp = model.generate_content(prompt, stream=True)
+            for chunk in resp:
+                try:
+                    if chunk.text:
+                        collected.append(chunk.text)
+                except Exception:
+                    pass
+            return collected
+
+        for model_name in config.gemini_model_candidates():
+            retry_delay = 4
+            for attempt in range(1, max_retries + 1):
+                try:
+                    logger.info(f"Calling Gemini API ({model_name}, attempt {attempt})...")
+                    if model_name != config.GEMINI_MODEL_NAME:
+                        yield sse("status", f"Switching to fallback model: {model_name}...")
+                    gemini_model = (
+                        self.model if model_name == config.GEMINI_MODEL_NAME else GenerativeModel(model_name)
+                    )
+
+                    with ThreadPoolExecutor(max_workers=1, thread_name_prefix="gemini") as executor:
+                        future = executor.submit(_gemini_sync_call, gemini_model)
                         try:
-                            if chunk.text:
-                                collected.append(chunk.text)
-                        except Exception:
-                            pass
-                    return collected
-                
-                with ThreadPoolExecutor(max_workers=1, thread_name_prefix="gemini") as executor:
-                    future = executor.submit(_gemini_sync_call)
-                    try:
-                        chunks_list = future.result(timeout=GEMINI_TIMEOUT_SECONDS)
-                    except FuturesTimeoutError:
-                        future.cancel()
-                        raise TimeoutError(f"Gemini call exceeded {GEMINI_TIMEOUT_SECONDS}s timeout")
-                
-                # Stream collected chunks to client
-                for text_chunk in chunks_list:
-                    answer += text_chunk
-                    yield sse("chunk", text_chunk)
-                    
-                success = True
-                break
-            except TimeoutError as te:
-                logger.error(f"Gemini timeout: {te}. Trying OpenRouter fallback...")
-                last_error_details = f"Gemini timed out after {GEMINI_TIMEOUT_SECONDS}s"
-                yield sse("status", f"Query timed out after {GEMINI_TIMEOUT_SECONDS}s. Switching to fallback model...")
-                break
-            except Exception as e:
-                err_str = str(e).lower()
-                is_rate_limit = "429" in err_str or "resource_exhausted" in err_str or "rate limit" in err_str
-                
-                if is_rate_limit and attempt < max_retries:
-                    if attempt == 1:
-                        yield sse("status", "CK Intelligence is temporarily waiting for model availability...")
-                    else:
-                        yield sse("status", "Retrying grounded synthesis...")
-                    logger.warning(f"Gemini API rate limited (429). Waiting {retry_delay}s to retry...")
-                    time.sleep(retry_delay)
-                    retry_delay *= 2  # Exponential backoff
-                else:
-                    logger.error(f"Gemini generation failed: {e}. Trying OpenRouter fallback...")
-                    last_error_details = f"Gemini failed: {str(e)}"
+                            chunks_list = future.result(timeout=GEMINI_TIMEOUT_SECONDS)
+                        except FuturesTimeoutError:
+                            future.cancel()
+                            raise TimeoutError(f"Gemini call exceeded {GEMINI_TIMEOUT_SECONDS}s timeout")
+
+                    for text_chunk in chunks_list:
+                        answer += text_chunk
+                        yield sse("chunk", text_chunk)
+
+                    success = True
                     break
-                    
-        if not success:
-            if self.use_openrouter:
-                for or_attempt in range(1, 3):
+                except TimeoutError as te:
+                    logger.error(f"Gemini timeout ({model_name}): {te}")
+                    last_error = te
+                    yield sse("status", f"Query timed out after {GEMINI_TIMEOUT_SECONDS}s. Trying another model...")
+                    break
+                except Exception as e:
+                    last_error = e
+                    if _is_rate_limit_error(e) and attempt < max_retries:
+                        wait = _parse_retry_seconds(e, retry_delay)
+                        yield sse("status", f"Model rate-limited. Retrying in {wait}s...")
+                        logger.warning(f"Gemini rate limited ({model_name}). Waiting {wait}s...")
+                        time.sleep(wait)
+                        retry_delay = min(retry_delay * 2, 30)
+                        continue
+
+                    logger.error(f"Gemini generation failed ({model_name}): {e}")
+                    if model_name != config.gemini_model_candidates()[-1]:
+                        yield sse("status", "Trying next Gemini fallback model...")
+                    break
+
+            if success:
+                break
+
+        if not success and self.use_openrouter:
+            for fallback_model in config.openrouter_model_candidates():
+                for or_attempt in range(1, 4):
                     try:
-                        yield sse("status", f"Connecting to OpenRouter Llama... (Attempt {or_attempt})")
-                        fallback_model = config.OPENROUTER_MODEL_NAME
+                        yield sse("status", f"Connecting to OpenRouter ({fallback_model})...")
                         response = self.client.chat.completions.create(
                             model=fallback_model,
                             messages=[{"role": "user", "content": prompt}],
-                            stream=True
+                            stream=True,
                         )
                         for chunk in response:
                             if chunk.choices[0].delta.content:
@@ -327,22 +364,23 @@ ANSWER:"""
                         success = True
                         break
                     except Exception as e2:
-                        err_str = str(e2).lower()
-                        logger.error(f"OpenRouter fallback failed on attempt {or_attempt}: {e2}")
-                        last_error_details = f"OpenRouter failed: {str(e2)}"
-                        if "429" in err_str and or_attempt < 2:
-                            yield sse("status", "Kimi is rate-limited upstream. Waiting to retry...")
-                            time.sleep(5)
-                        else:
-                            # Forward the error message to the UI
-                            yield sse("status", f"OpenRouter Error: {str(e2)}")
-                            answer += f"\n\n[OpenRouter API Error: {str(e2)}]"
-                            break
-            else:
-                logger.error("No OpenRouter fallback configured.")
-                
+                        last_error = e2
+                        logger.error(f"OpenRouter failed ({fallback_model}, attempt {or_attempt}): {e2}")
+                        if _is_rate_limit_error(e2) and or_attempt < 3:
+                            wait = _parse_retry_seconds(e2, 8)
+                            yield sse("status", f"OpenRouter rate-limited. Retrying in {wait}s...")
+                            time.sleep(wait)
+                            continue
+                        if fallback_model != config.openrouter_model_candidates()[-1]:
+                            yield sse("status", "Trying next OpenRouter fallback model...")
+                        break
+                if success:
+                    break
+        elif not success:
+            logger.error("No OpenRouter fallback configured.")
+
         if not success:
-            err_msg = f"\n[An error occurred while generating the response. Details: {last_error_details}]"
+            err_msg = _user_friendly_synthesis_error(last_error or Exception("Unknown synthesis error"))
             yield sse("chunk", err_msg)
             answer += err_msg
             
