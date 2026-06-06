@@ -229,17 +229,17 @@ fomc-ai-analyzer/
 
 ## API Reference
 
-| Method | Endpoint | Auth | Description |
+| Method | Endpoint | Access | Description |
 |---|---|---|---|
-| `GET` | `/health` | ❌ | System status — doc count, cache, uptime, model |
-| `POST` | `/upload` | ✅ | Upload PDF/TXT — MIME validation, 15MB limit |
-| `POST` | `/query` | ✅ | SSE streaming query with citations |
-| `GET` | `/documents` | ❌ | List all indexed documents |
-| `DELETE` | `/documents/{id}` | ✅ | Delete document + vectors |
-| `GET` | `/sentiment-timeline` | ❌ | Hawk/Dove scores over time |
-| `POST` | `/sessions` | ✅ | Create chat session |
-| `GET` | `/sessions/{id}/history` | ❌ | Get session history |
-| `DELETE` | `/sessions/{id}` | ✅ | Delete session |
+| `GET` | `/health` | 🌐 Public | System status — doc count, cache, uptime, model |
+| `POST` | `/upload` | 🔒 Auth | Upload PDF/TXT — MIME validation, 15MB limit |
+| `POST` | `/query` | 🔒 Auth | SSE streaming query with citations |
+| `GET` | `/documents` | 🌐 Public | List all indexed documents |
+| `DELETE` | `/documents/{id}` | 🔒 Auth | Delete document + vectors |
+| `GET` | `/sentiment-timeline` | 🌐 Public | Hawk/Dove scores over time |
+| `POST` | `/sessions` | 🔒 Auth | Create chat session |
+| `GET` | `/sessions/{id}/history` | 🌐 Public | Get session history |
+| `DELETE` | `/sessions/{id}` | 🔒 Auth | Delete session |
 
 **Example query:**
 ```bash
