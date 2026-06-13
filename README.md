@@ -11,9 +11,6 @@
 [![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python)](https://python.org)
 
 [**Challenge Page**](https://github.com/mathworks/MATLAB-Simulink-Challenge-Project-Hub/tree/main/projects/Federal%20Open%20Market%20Committee%20Minutes%20Analysis%20with%20Large%20Language%20Models)
-
-**🟢 Live Demo:** [YOUR_VERCEL_URL_HERE.vercel.app](https://YOUR_VERCEL_URL_HERE.vercel.app)
-
 <br>
 
 **⭐ If you find this useful, please star the repo! ⭐**
