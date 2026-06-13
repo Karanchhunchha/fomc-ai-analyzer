@@ -16,9 +16,9 @@
 
 <br>
 
-<img src="docs/ss1.png" alt="FOMC Terminal — Grounded Synthesis" width="800">
-<br/><br/>
 <img src="docs/ss2.png" alt="FOMC Terminal — Citations" width="800">
+<br/><br/>
+<img src="docs/ss1.png" alt="FOMC Terminal — Grounded Synthesis" width="800">
 
 *AI-native workspace featuring the "Thinking Panel" and semantic citations.*
 
