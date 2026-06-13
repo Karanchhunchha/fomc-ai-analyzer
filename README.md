@@ -1,25 +1,24 @@
 # FOMC AI Analyzer 🏛️
 
 <div align="center">
-**Enterprise-grade local intelligence platform for Federal Reserve policy analysis**
-[![MathWorks Challenge](https://img.shields.io/badge/MathWorks-Challenge%20%23258-E2231A?style=flat-square&logo=mathworks)](https://github.com/mathworks/MATLAB-Simulink-Challenge-Project-Hub/tree/main/projects/Federal%20Open%20Market%20Committee%20Minutes%20Analysis%20with%20Large%20Language%20Models)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
-[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=nextdotjs)](https://nextjs.org)
-[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python)](https://python.org)
 
-[**Challenge Page**](https://github.com/mathworks/MATLAB-Simulink-Challenge-Project-Hub/tree/main/projects/Federal%20Open%20Market%20Committee%20Minutes%20Analysis%20with%20Large%20Language%20Models)
+### Enterprise-grade local intelligence platform for Federal Reserve policy analysis
+
+[![MathWorks Challenge](https://img.shields.io/badge/MathWorks-Challenge%20%23258-E2231A?style=for-the-badge&logo=mathworks&logoColor=white)](https://github.com/mathworks/MATLAB-Simulink-Challenge-Project-Hub/tree/main/projects/Federal%20Open%20Market%20Committee%20Minutes%20Analysis%20with%20Large%20Language%20Models)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=nextdotjs&logoColor=white)](https://nextjs.org)
+[![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+
 <br>
 
-**⭐ If you find this useful, please star the repo! ⭐**
+**⭐ If you find this useful, please star the repo — it really helps! ⭐**
 
-<div align="center">
-  <img src="docs/ss1.png" alt="FOMC Terminal - Analysis" width="800"/>
-  <br/><br/>
-  <img src="docs/ss2.png" alt="FOMC Terminal - Citations" width="800"/>
+<br>
+
+<img src="docs/screenshot-analysis.png" alt="FOMC Terminal — Grounded Synthesis" width="800">
+
 </div>
-
-*AI-native workspace featuring the "Thinking Panel" and semantic citations.*
 
 ---
 
