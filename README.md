@@ -2,7 +2,7 @@
 
 <div align="center">
 
-### Enterprise-grade local intelligence platform for Federal Reserve policy analysis
+### Production-ready local intelligence platform for Federal Reserve policy analysis
 
 [![MathWorks Challenge](https://img.shields.io/badge/MathWorks-Challenge%20%23258-E2231A?style=for-the-badge&logo=mathworks&logoColor=white)](https://github.com/mathworks/MATLAB-Simulink-Challenge-Project-Hub/tree/main/projects/Federal%20Open%20Market%20Committee%20Minutes%20Analysis%20with%20Large%20Language%20Models)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
@@ -16,7 +16,11 @@
 
 <br>
 
-<img src="docs/screenshot-analysis.png" alt="FOMC Terminal — Grounded Synthesis" width="800">
+<img src="docs/ss1.png" alt="FOMC Terminal — Grounded Synthesis" width="800">
+<br/><br/>
+<img src="docs/ss2.png" alt="FOMC Terminal — Citations" width="800">
+
+*AI-native workspace featuring the "Thinking Panel" and semantic citations.*
 
 </div>
 
@@ -313,9 +317,9 @@ Open: `http://localhost:3000`
 
 ---
 
-## Pro User Workflows & Advanced Integration
+## Advanced Usage & Integration
 
-Built for local execution and enterprise workflows, the platform can be seamlessly extended for advanced financial research:
+Built for local execution, the platform can be seamlessly extended for advanced financial research:
 
 ### 1. Automated Bulk Ingestion
 Use the `ingestion_worker.py` to continuously poll the Federal Reserve RSS feeds. Run it as a background service to ensure your vector store is always up-to-date with the latest minutes.
@@ -344,6 +348,14 @@ response = requests.post(
 
 print(response.json())
 ```
+
+---
+
+## Optional: Cloud Deployment
+
+While configured for local use, the project includes a `render.yaml` for optional deployment to Render.
+- **Backend**: Mount a 1GB Disk to `/var/data` and set `CHROMA_PERSIST_PATH=/var/data/chroma_db`.
+- **Frontend**: Can be deployed to Vercel by setting `API_BASE_URL` to your Render URL.
 
 ---
 
