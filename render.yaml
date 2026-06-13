@@ -17,7 +17,7 @@ services:
       - key: GEMINI_MODEL
         value: gemini-2.5-flash
       - key: MIN_SIMILARITY_THRESHOLD
-        value: "0.50"
+        value: "0.20"
       - key: TOP_K_RETRIEVAL
         value: "5"
       - key: GEMINI_API_KEY
@@ -25,4 +25,6 @@ services:
       - key: OPENROUTER_API_KEY
         sync: false
       - key: INTERNAL_API_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
         sync: false
