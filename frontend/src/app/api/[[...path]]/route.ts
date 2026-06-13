@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const BACKEND_URL = process.env.API_BASE_URL || "http://localhost:8000";
+const BACKEND_URL = process.env.API_BASE_URL || "http://127.0.0.1:8000";
 const API_KEY = process.env.INTERNAL_API_KEY || "";
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ path?: string[] }> }) {
