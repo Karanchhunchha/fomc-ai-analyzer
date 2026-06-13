@@ -22,10 +22,10 @@
 
 ---
 
-## 📸 Live Demo (GIF)
+## 📸 Dashboard Preview
 
-![FOMC Analyzer Demo](docs/demo.gif)
-*Replace `docs/demo.gif` with a 10-15s screen recording showing the AI Thinking Panel, Streaming Response, and Citation Highlighting.*
+![FOMC Analyzer Demo](docs/dashboard_ss.png)
+*AI-native workspace featuring the "Thinking Panel" and semantic citations.*
 
 ---
 
