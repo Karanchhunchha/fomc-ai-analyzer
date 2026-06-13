@@ -18,13 +18,12 @@
 
 **⭐ If you find this useful, please star the repo! ⭐**
 
+<div align="center">
+  <img src="docs/ss1.png" alt="FOMC Terminal - Analysis" width="800"/>
+  <br/><br/>
+  <img src="docs/ss2.png" alt="FOMC Terminal - Citations" width="800"/>
 </div>
 
----
-
-## 📸 Dashboard Preview
-
-![FOMC Analyzer Demo](docs/dashboard_ss.png)
 *AI-native workspace featuring the "Thinking Panel" and semantic citations.*
 
 ---
