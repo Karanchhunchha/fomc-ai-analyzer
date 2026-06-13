@@ -23,6 +23,7 @@ interface ChatMessage {
     meetingDate: string
   }
   isStreaming?: boolean
+  thinkingSteps?: {step: string, message: string}[]
 }
 
 export default function WorkspacePage() {
@@ -98,7 +99,8 @@ export default function WorkspacePage() {
         chunksSearched: 0,
         meetingDate: "..."
       },
-      isStreaming: true
+      isStreaming: true,
+      thinkingSteps: []
     }
 
     setMessages(prev => [...prev, initialMsg])
@@ -114,6 +116,18 @@ export default function WorkspacePage() {
           setMessages(prev => prev.map((msg, idx) => 
             idx === prev.length - 1 ? { ...msg, answer: collectedAnswer } : msg
           ))
+        },
+        onThinking: (data: {step: string, message: string}) => {
+          setMessages(prev => prev.map((msg, idx) => {
+            if (idx === prev.length - 1) {
+              const currentSteps = msg.thinkingSteps || [];
+              // Prevent duplicates if SSE double-fires
+              if (!currentSteps.some(s => s.step === data.step)) {
+                return { ...msg, thinkingSteps: [...currentSteps, data] };
+              }
+            }
+            return msg;
+          }));
         },
         onMetadata: (meta: any) => {
           collectedSources = meta.sources || []
@@ -296,6 +310,7 @@ export default function WorkspacePage() {
                   confidence={msg.confidence}
                   metadata={msg.metadata}
                   isStreaming={msg.isStreaming}
+                  thinkingSteps={msg.thinkingSteps}
                   onExcerptClick={handleExcerptHighlight}
                 />
               ))}

@@ -198,6 +198,7 @@ ANSWER:"""
             mode = self.classify_mode(user_query)
         logger.info(f"RAG Pipeline processing query in mode '{mode}': '{user_query}'")
         
+        yield sse("thinking", {"step": "classified", "message": f"Query classified as: {mode.title()}"})
         yield sse("status", "Retrieving semantic evidence...")
         
         # 1. Enhance query with formal terminology and synonyms
@@ -208,6 +209,8 @@ ANSWER:"""
         
         # 2. Retrieve semantic context
         search_results = self.searcher.search(enhanced_query, top_k=top_k)
+        
+        yield sse("thinking", {"step": "retrieved", "message": f"Retrieved {len(search_results['text'])} chunks (hybrid search)"})
         
         # 2. Extract similarity scores and check threshold
         has_results = bool(search_results['text'])
@@ -233,6 +236,7 @@ ANSWER:"""
             return
             
         yield sse("status", "Reranking relevant context...")
+        yield sse("thinking", {"step": "reranked", "message": "Reranked with CrossEncoder"})
         
         unique_citations = list(set(search_results['citations']))
         doc_ids = sorted(unique_citations)
@@ -276,7 +280,9 @@ ANSWER:"""
         # 3. Construct prompt
         prompt = self.generate_prompt(user_query, search_results, mode, threshold=threshold)
         
+        yield sse("thinking", {"step": "validated", "message": "Citations validated"})
         yield sse("status", "Generating grounded answer...")
+        yield sse("thinking", {"step": "streamed", "message": "Response streamed"})
         
         # 4. Generate response using Gemini primarily, fallback to OpenRouter
         success = False

@@ -74,6 +74,7 @@ export async function queryDocumentsStream(
   sessionId?: string,
   callbacks: {
     onStatus?: (status: string) => void;
+    onThinking?: (data: {step: string, message: string}) => void;
     onMetadata?: (metadata: any) => void;
     onChunk?: (chunk: string) => void;
     onDone?: (data: any) => void;
@@ -136,6 +137,8 @@ export async function queryDocumentsStream(
 
           if (event === "status" && callbacks.onStatus) {
             callbacks.onStatus(parsedData as string);
+          } else if (event === "thinking" && callbacks.onThinking) {
+            callbacks.onThinking(parsedData as any);
           } else if (event === "metadata" && callbacks.onMetadata) {
             callbacks.onMetadata(parsedData);
           } else if (event === "chunk" && callbacks.onChunk) {

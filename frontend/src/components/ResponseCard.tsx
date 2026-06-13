@@ -3,6 +3,7 @@ import React from "react"
 import { BorderBeam } from "@/components/ui/border-beam"
 import { TypingAnimation } from "@/components/ui/typing-animation"
 import { Clock, CheckCircle2, FileText } from "lucide-react"
+import { ThinkingPanel, ThinkingStep } from "./ThinkingPanel"
 
 export interface Excerpt {
   num: number
@@ -24,6 +25,7 @@ interface ResponseCardProps {
     meetingDate: string
   }
   isStreaming?: boolean
+  thinkingSteps?: ThinkingStep[]
   onExcerptClick?: (idx: number) => void
 }
 
@@ -34,6 +36,7 @@ export function ResponseCard({
   confidence,
   metadata,
   isStreaming,
+  thinkingSteps = [],
   onExcerptClick,
 }: ResponseCardProps) {
   const confidenceStyles = {
@@ -74,6 +77,9 @@ export function ResponseCard({
           </p>
         </div>
       </div>
+
+      {/* Thinking Panel */}
+      <ThinkingPanel steps={thinkingSteps} isStreaming={!!isStreaming} />
 
       {/* AI Grounded Synthesis Panel */}
       <div className="relative bg-term-bg-card border border-term-border rounded-lg shadow-term-shadow overflow-hidden">
