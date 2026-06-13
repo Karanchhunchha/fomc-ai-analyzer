@@ -1,9 +1,7 @@
 # FOMC AI Analyzer 🏛️
 
 <div align="center">
-
-**AI-native financial intelligence platform for Federal Reserve policy analysis**
-
+**Enterprise-grade local intelligence platform for Federal Reserve policy analysis**
 [![MathWorks Challenge](https://img.shields.io/badge/MathWorks-Challenge%20%23258-E2231A?style=flat-square&logo=mathworks)](https://github.com/mathworks/MATLAB-Simulink-Challenge-Project-Hub/tree/main/projects/Federal%20Open%20Market%20Committee%20Minutes%20Analysis%20with%20Large%20Language%20Models)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
@@ -27,7 +25,7 @@
 
 ## What This Is
 
-A production-deployed RAG (Retrieval-Augmented Generation) terminal that ingests Federal Open Market Committee meeting minutes and answers natural language questions about monetary policy — with source citations, confidence scoring, and real-time policy stance visualization.
+An advanced local RAG (Retrieval-Augmented Generation) workspace designed for professional economists and financial analysts. It ingests Federal Open Market Committee meeting minutes and answers natural language questions about monetary policy — with source citations, confidence scoring, and real-time policy stance visualization.
 
 Built for the **MathWorks Excellence in AI Challenge #258** by [Karan Chhunchha](mailto:karanchhunchha@gmail.com).
 
@@ -51,7 +49,7 @@ Grounded answer with [Excerpt N] citations + CONFIDENCE: HIGH/MEDIUM/LOW
 
 ```mermaid
 flowchart LR
-  subgraph "Frontend — Vercel"
+  subgraph "Frontend"
     UI["Next.js Workspace"]
     UP["Upload PDF/TXT"]
     QI["Query Input"]
@@ -64,7 +62,7 @@ flowchart LR
     RL["slowapi 10/min"]
   end
 
-  subgraph "FastAPI Backend — Render"
+  subgraph "FastAPI Backend"
     EP1["/upload"]
     EP2["/query SSE Stream"]
     EP3["/sentiment-timeline"]
@@ -81,7 +79,7 @@ flowchart LR
     OR["OpenRouter Fallback"]
   end
 
-  subgraph "Render Disk /var/data"
+  subgraph "Local Persistent Storage"
     CD[("ChromaDB")]
     SQ[("SQLite")]
   end
@@ -134,9 +132,9 @@ Four specialized agents routed by an orchestrator:
 |---|---|
 | Auth | `X-API-Key` header verification via FastAPI dependency |
 | Rate limiting | `slowapi` — 10/min queries, 5/min uploads, 100/min general |
-| CORS | Env var whitelist — no `allow_origins=["*"]` |
+| CORS | Strict env var whitelist |
 | Input validation | HTML strip, null byte removal, 2000 char limit, MIME check |
-| Persistence | ChromaDB + SQLite on Render Disk `/var/data` — survives restarts |
+| Persistence | Local ChromaDB + SQLite data persistence between sessions |
 | Timeouts | 25s Gemini timeout via `ThreadPoolExecutor.result(timeout=25)` + 30s frontend `AbortController` |
 | Logging | `loguru` structured logs with `X-Request-ID` per request, daily rotation |
 | Health check | `GET /health` — indexed doc count, cache entries, uptime, model |
@@ -250,11 +248,11 @@ fomc-ai-analyzer/
 | `GET` | `/sessions/{id}/history` | 🌐 Public | Get session history |
 | `DELETE` | `/sessions/{id}` | 🔒 Auth | Delete session |
 
-**Example query:**
+**Example query (Local Backend):**
 ```bash
-curl -X POST https://fomc-ai-analyzer-backend.onrender.com/query \
+curl -X POST http://localhost:8000/query \
   -H "Content-Type: application/json" \
-  -H "X-API-Key: your_key" \
+  -H "X-API-Key: your_local_api_key" \
   -d '{"query": "What was the inflation outlook at the January 2026 meeting?", "top_k": 5}'
 ```
 
@@ -316,59 +314,36 @@ Open: `http://localhost:3000`
 
 ---
 
-## Deployment
+## Pro User Workflows & Advanced Integration
 
-### Render (Backend)
+Built for local execution and enterprise workflows, the platform can be seamlessly extended for advanced financial research:
 
-1. Connect GitHub repo → New Web Service
-2. Build: `pip install -r requirements.txt`
-3. Start: `uvicorn backend.api:app --host 0.0.0.0 --port $PORT --workers 2`
-4. Health check path: `/health`
-5. Add **Disk**: mount path `/var/data`, size 1GB
-6. Environment variables:
+### 1. Automated Bulk Ingestion
+Use the `ingestion_worker.py` to continuously poll the Federal Reserve RSS feeds. Run it as a background service to ensure your vector store is always up-to-date with the latest minutes.
 
-```env
-GEMINI_API_KEY=your_key
-OPENROUTER_API_KEY=your_key
-INTERNAL_API_KEY=generate_with_python_uuid4
-ALLOWED_ORIGINS=https://your-vercel-url.vercel.app
-CHROMA_PERSIST_PATH=/var/data/chroma_db
-SQLITE_DB_PATH=/var/data/ck_workspace.db
-GEMINI_MODEL=gemini-2.5-flash
-MIN_SIMILARITY_THRESHOLD=0.20
-TOP_K_RETRIEVAL=5
+```bash
+python backend/ingestion_worker.py --daemon --interval 3600
 ```
 
-> ⚠️ The Render Disk is required. Without it, ChromaDB resets on every restart.
+### 2. Custom Agent Orchestration
+You can override or extend the existing intelligence agents (`fomc_agent.py`, `market_agent.py`) to pipe outputs directly into algorithmic trading signals, macroeconomic forecasting models, or internal risk dashboards.
 
-### Vercel (Frontend)
+### 3. Programmatic API Integration
+Integrate the FastAPI backend directly into your existing data pipelines by querying the RAG pipeline programmatically:
 
-1. Import repo → set root directory to `frontend/`
-2. Environment variables:
+```python
+import requests
 
-```env
-API_BASE_URL=https://your-render-url.onrender.com
-INTERNAL_API_KEY=same_key_as_backend
-```
+response = requests.post(
+    "http://127.0.0.1:8000/query",
+    headers={"X-API-Key": "your_local_api_key"},
+    json={
+        "query": "Hawkish indicators in the latest minutes", 
+        "top_k": 10
+    }
+)
 
----
-
-## Live Test Queries
-
-After deploying or running locally with the sample document:
-
-```
-Q: "What was the federal funds rate decision in January 2026?"
-A: Maintained at 3½–3¾% — unanimous vote [Excerpt 1]
-
-Q: "What were the main inflation concerns discussed?"
-A: Core PCE at 2.8%, shelter costs elevated, tariff effects on goods [Excerpt 2]
-
-Q: "What did participants say about the labor market?"
-A: Unemployment stable, low layoffs but low hiring [Excerpt 3]
-
-Q: "Who voted against maintaining rates?"
-A: Almost all supported holding — couple preferred to lower [Excerpt 4]
+print(response.json())
 ```
 
 ---
