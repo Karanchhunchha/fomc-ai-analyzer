@@ -15,7 +15,7 @@ google-generativeai==0.8.3
 openai==1.47.0  # For OpenRouter fallback
 
 # PDF Processing
-PyMuPDF==1.24.10
+PyMuPDF==1.27.2.3
 
 # Data
 numpy==1.26.4
@@ -36,5 +36,5 @@ aiofiles==24.1.0
 # Ingestion
 feedparser==6.0.11
 apscheduler==3.10.4
-aiohttp==3.10.5
+aiohttp==3.10.10
 beautifulsoup4==4.12.3

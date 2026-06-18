@@ -46,10 +46,13 @@ export function ResponseCard({
   }
 
   // Parse inline citations like [1] to render interactive terminal tokens
-  const formatText = (rawText: string) => {
+  const formatCitations = (rawText: string) => {
     if (!rawText) return ""
+    const escapedText = rawText
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
     const citeRegex = /(\[\d+\])/g
-    const parts = rawText.split(citeRegex)
+    const parts = escapedText.split(citeRegex)
     return parts.map((part, idx) => {
       if (part.startsWith("[") && part.endsWith("]")) {
         const num = parseInt(part.replace(/[\[\]]/g, ""))
@@ -112,7 +115,7 @@ export function ResponseCard({
             {isStreaming ? (
               <TypingAnimation text={answer} duration={15} />
             ) : (
-              formatText(answer)
+              formatCitations(answer)
             )}
           </div>
 

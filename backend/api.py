@@ -4,7 +4,7 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File, Depends, Request
 from fastapi.responses import StreamingResponse
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import List, Dict, Any, Optional
 import logging
 import os
@@ -80,7 +80,7 @@ app.add_middleware(RequestLoggingMiddleware)
 
 class QueryRequest(BaseModel):
     query: str
-    top_k: int = 5
+    top_k: int = Field(default=5, ge=1, le=20)
     mode: Optional[str] = "auto"
     session_id: Optional[str] = None
 
