@@ -38,19 +38,24 @@ def _open_connection():
 
     if _use_postgres():
         if not POSTGRES_AVAILABLE:
-            raise ImportError("psycopg2 is not installed but DATABASE_TYPE is set to 'postgres'.")
-        try:
-            return psycopg2.connect(config.DATABASE_URL, connect_timeout=3)
-        except Exception as exc:
-            if _is_local_postgres_url(config.DATABASE_URL):
-                logger.warning(
-                    "PostgreSQL unavailable (%s). Falling back to SQLite at %s.",
-                    exc,
-                    DB_PATH,
-                )
-                _using_sqlite_fallback = True
-            else:
-                raise
+            logger.warning(
+                "psycopg2 is not installed but DATABASE_TYPE is set to 'postgres'. Falling back to SQLite at %s.",
+                DB_PATH,
+            )
+            _using_sqlite_fallback = True
+        else:
+            try:
+                return psycopg2.connect(config.DATABASE_URL, connect_timeout=3)
+            except Exception as exc:
+                if _is_local_postgres_url(config.DATABASE_URL):
+                    logger.warning(
+                        "PostgreSQL unavailable (%s). Falling back to SQLite at %s.",
+                        exc,
+                        DB_PATH,
+                    )
+                    _using_sqlite_fallback = True
+                else:
+                    raise
 
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     conn = sqlite3.connect(DB_PATH)

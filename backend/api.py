@@ -110,8 +110,8 @@ async def health_check():
         logger.error(f"Health check vector store count error: {e}")
         doc_count = -1
         
+    from backend.database import get_cache_count
     try:
-        from backend.database import get_cache_count
         cache_count = get_cache_count()
     except Exception as e:
         logger.error(f"Health check cache count error: {e}")
