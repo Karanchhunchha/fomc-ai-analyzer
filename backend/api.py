@@ -548,25 +548,37 @@ async def delete_document(document_id: str):
     """
     Delete a document and all its chunks from the vector store.
     """
+    # Sanitize document_id to prevent path traversal attacks
+    if ".." in document_id or "/" in document_id or "\\" in document_id:
+        raise HTTPException(status_code=400, detail="Invalid document ID")
+    safe_id = os.path.basename(document_id)
+    if not safe_id:
+        raise HTTPException(status_code=400, detail="Invalid document ID")
+    
+    # Defense-in-depth: verify resolved path stays inside data/raw
+    file_path = os.path.join("data/raw", safe_id)
+    if not os.path.abspath(file_path).startswith(os.path.abspath("data/raw")):
+        raise HTTPException(status_code=400, detail="Path traversal blocked")
+    
     try:
         from backend.vector_store import VectorStore
         store = VectorStore()
         collection = store.get_collection()
         
         # Delete from ChromaDB where source_document matches
-        collection.delete(where={"source_document": document_id})
+        collection.delete(where={"source_document": safe_id})
         
         # Clean up local raw file if it exists
-        file_path = os.path.join("data/raw", document_id)
+        file_path = os.path.join("data/raw", safe_id)
         if os.path.exists(file_path):
             try:
                 os.remove(file_path)
             except Exception:
                 pass
                 
-        return {"message": f"Successfully deleted {document_id}"}
+        return {"message": f"Successfully deleted {safe_id}"}
     except Exception as e:
-        logger.error(f"Error deleting document {document_id}: {e}")
+        logger.error(f"Error deleting document {safe_id}: {e}")
         raise HTTPException(status_code=500, detail=f"Failed to delete document: {str(e)}")
 
 if __name__ == "__main__":

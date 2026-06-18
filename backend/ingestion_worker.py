@@ -5,7 +5,11 @@ import feedparser
 import logging
 import hashlib
 from datetime import datetime
+from urllib.parse import urlparse
 from bs4 import BeautifulSoup
+
+# Allowed hostnames for document downloads (SSRF protection)
+ALLOWED_HOSTS = {"www.federalreserve.gov", "federalreserve.gov"}
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 # Import existing pipeline components
@@ -26,6 +30,11 @@ def ensure_dirs():
 
 async def download_document(url: str, title: str) -> str:
     """Download the document asynchronously using aiohttp."""
+    # SSRF protection: only allow downloads from trusted Fed domains
+    parsed = urlparse(url)
+    if parsed.hostname not in ALLOWED_HOSTS:
+        raise ValueError(f"Blocked download from untrusted host: {parsed.hostname}")
+    
     logger.info(f"Downloading new document: {url}")
     
     filename = url.split('/')[-1]
