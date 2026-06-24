@@ -176,7 +176,7 @@ Eight MATLAB scripts demonstrating the MathWorks challenge toolboxes:
 
 > **Architecture note:** MATLAB operates as a standalone analytics validation and visualization layer demonstrating Challenge #258 toolbox requirements. The production API is Python-native for cloud deployment portability. No MATLAB runtime is required to run the live system.
 
----
+--- 
 
 ## Tech Stack
 
